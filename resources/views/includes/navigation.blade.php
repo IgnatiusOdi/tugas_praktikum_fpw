@@ -1,6 +1,6 @@
-<div class="navbar bg-base-100">
+<div class="navbar bg-primary">
     <div class="flex-1">
-        <a class="btn btn-ghost normal-case text-xl">daisyUI</a>
+        <a class="btn btn-ghost normal-case text-xl">Ih-class</a>
     </div>
     <div class="flex-none">
         <ul class="menu menu-horizontal p-0">

@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\DosenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,44 +17,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect("login");
-});
-Route::get('login', function () {
-    return view('login');
-})->name('login');
+Route::get('/', [PageController::class, 'redirectToLogin']);
+Route::get('login', [PageController::class, 'login'])->name('login');
 Route::prefix('register')->group(function () {
-    Route::get('/', function () {
-        return view('pages.mahasiswa.register');
-    });
-    Route::get('dosen', function () {
-        return view('pages.dosen.register');
-    });
+    Route::get('/', [MahasiswaController::class, 'register'])->name('register-mahasiswa');
+    Route::get('dosen', [DosenController::class, 'register'])->name('register-dosen');
 });
 Route::prefix('admin')->group(function () {
-    Route::get('/', function () {
-        return view('pages.admin.home');
-    });
-    Route::get('dosen', function () {
-        return view('pages.admin.dosen');
-    });
-    Route::get('mahasiswa', function () {
-        return view('pages.admin.mahasiswa');
-    });
+    Route::get('/', [AdminController::class, 'home'])->name('admin-home');
+    Route::get('dosen', [AdminController::class, 'dosen'])->name('admin-dosen');
+    Route::get('mahasiswa', [AdminController::class, 'mahasiswa'])->name('admin-mahasiswa');
 });
 Route::prefix('dosen')->group(function () {
-    Route::get('/', function () {
-        return view('pages.dosen.home');
-    });
-    Route::get('profile', function () {
-        return view('pages.dosen.profile');
-    });
+    Route::get('/', [DosenController::class, "home"])->name("dosen-home");
+    Route::get('profile', [DosenController::class, "profile"])->name("dosen-profile");
 });
 Route::prefix('mahasiswa')->group(function () {
-    Route::get('/', function () {
-        return view('pages.mahasiswa.home');
-    });
-    Route::get('profile', function () {
-        return view('pages.mahasiswa.profile');
-    });
+    Route::get('/', [MahasiswaController::class, "home"])->name("mahasiswa-home");
+    Route::get('profile', [MahasiswaController::class, "profile"])->name("mahasiswa-profile");
 });
