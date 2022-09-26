@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', "REGISTER")
+
 @section('main')
     <div class="bg-secondary-focus min-h-screen">
         <div class="flex flex-col items-center justify-center mx-auto h-screen">

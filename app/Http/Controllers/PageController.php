@@ -13,7 +13,6 @@ class PageController extends Controller
 
     public function login()
     {
-        $title = "LOGIN";
-        return view('login', compact("title"));
+        return view('login');
     }
 }
