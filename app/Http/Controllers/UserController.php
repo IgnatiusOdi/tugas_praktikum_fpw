@@ -17,6 +17,8 @@ class UserController extends Controller
             return redirect()->route("mahasiswa-home");
         } else if ($username == "dosen" && $password == "dosen") {
             return redirect()->route("dosen-home");
+        } else {
+            return redirect()->back();
         }
 
         // foreach ($users as $user) {

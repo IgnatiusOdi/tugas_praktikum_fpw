@@ -12,12 +12,15 @@ class MahasiswaController extends Controller
         return view('pages.mahasiswa.register', compact("title"));
     }
 
-    public function home($nama = "NAMA", $nim = "NIM", $status = "AKTIF")
+    public function home()
     {
-        $nama = strtoupper($nama);
-        $nim = strtoupper($nim);
-        $status = strtoupper($status);
-        return view("pages.mahasiswa.home", compact("nama", "nim", "status"));
+        $listPelajaran = [
+            "Intro To Programming", "Object Orientation Programming", "Visual Programming", "Mobile Device Programming",
+            "Intro To Web", "Database", "Web Programming", "Web Programming Framework"
+        ];
+        $nama = "NAMA";
+        $status = "AKTIF";
+        return view("pages.mahasiswa.home", compact("nama", "listPelajaran", "status"));
     }
 
     public function profile($nama = "NAMA", $nim = "NIM", $status = "AKTIF")

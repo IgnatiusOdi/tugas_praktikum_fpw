@@ -10,7 +10,7 @@
         <div class="grid grid-cols-4 gap-4 p-4">
             @foreach ($listPelajaran as $pelajaran)
                 <div class="card w-full glass">
-                    <figure><img src="https://placeimg.com/400/225/arch" alt="Foto Dosen" /></figure>
+                    <figure><img src="https://placeimg.com/400/225/arch" alt="Foto Pelajaran" /></figure>
                     <div class="card-body">
                         <h2 class="card-title">{{ $pelajaran }}</h2>
                     </div>

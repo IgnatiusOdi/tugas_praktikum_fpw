@@ -12,11 +12,15 @@ class DosenController extends Controller
         return view('pages.dosen.register', compact("title"));
     }
 
-    public function home($nama = "NAMA", $status = "AKTIF")
+    public function home()
     {
-        $nama = strtoupper($nama);
-        $status = strtoupper($status);
-        return view("pages.dosen.home", compact("nama", 'status'));
+        $listPelajaran = [
+            "Intro To Programming", "Object Orientation Programming", "Visual Programming", "Mobile Device Programming",
+            "Intro To Web", "Database", "Web Programming", "Web Programming Framework"
+        ];
+        $nama = "NAMA";
+        $status = "AKTIF";
+        return view("pages.dosen.home", compact("nama", "listPelajaran", "status"));
     }
 
     public function profile($nama = "NAMA", $status = "AKTIF")

@@ -1,4 +1,8 @@
-<div class="navbar bg-primary">
+<div class="navbar @if (request()->is('mahasiswa') || request()->is('mahasiswa/*'))
+    bg-warning
+@else
+    bg-primary
+@endif">
     <div class="flex-1">
         <a class="btn btn-ghost normal-case text-xl" href=@yield('home')>iH - class</a>
     </div>
