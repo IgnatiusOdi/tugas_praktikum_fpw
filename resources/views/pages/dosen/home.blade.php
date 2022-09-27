@@ -1,9 +1,9 @@
 @extends('layouts.user')
 
 @section('title', 'HOME')
-@section('home', 'dosen')
-@section('profile', 'dosen/profile')
+@section('home', route('dosen-home'))
+@section('profile', route('dosen-profile'))
 
 @section('content')
-    <div>Home Dosen</div>
+    <div class="font-bold text-5xl p-10">Welcome, {{ $nama }}!</div>
 @endsection

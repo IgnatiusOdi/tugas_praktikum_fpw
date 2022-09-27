@@ -2,7 +2,5 @@
 
 @section('main')
     @include('includes.navigation')
-    <div class="flex">
-        @yield('content')
-    </div>
+    @yield('content')
 @endsection

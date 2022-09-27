@@ -12,15 +12,17 @@ class DosenController extends Controller
         return view('pages.dosen.register', compact("title"));
     }
 
-    public function home(Request $request)
+    public function home($nama = "NAMA", $status = "AKTIF")
     {
-        $title = "HOME | " . $request;
-        return view("pages.dosen.home", compact("title"));
+        $nama = strtoupper($nama);
+        $status = strtoupper($status);
+        return view("pages.dosen.home", compact("nama", 'status'));
     }
 
-    public function profile(Request $request)
+    public function profile($nama = "NAMA", $status = "AKTIF")
     {
-        $title = "PROFILE | " . $request;
-        return view("pages.dosen.profile", compact("title"));
+        $nama = strtoupper($nama);
+        $status = strtoupper($status);
+        return view("pages.dosen.profile", compact("nama", 'status'));
     }
 }

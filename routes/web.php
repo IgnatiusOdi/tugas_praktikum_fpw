@@ -32,9 +32,9 @@ Route::prefix('admin')->group(function () {
 });
 Route::prefix('dosen')->group(function () {
     Route::get('/', [DosenController::class, "home"])->name("dosen-home");
-    Route::get('profile', [DosenController::class, "profile"])->name("dosen-profile");
+    Route::get('profile/{nama?}/{status?}', [DosenController::class, "profile"])->name("dosen-profile");
 });
 Route::prefix('mahasiswa')->group(function () {
     Route::get('/', [MahasiswaController::class, "home"])->name("mahasiswa-home");
-    Route::get('profile', [MahasiswaController::class, "profile"])->name("mahasiswa-profile");
+    Route::get('profile/{nama?}/{nim?}/{status?}', [MahasiswaController::class, "profile"])->name("mahasiswa-profile");
 });

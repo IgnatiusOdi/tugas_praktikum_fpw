@@ -12,13 +12,19 @@ class MahasiswaController extends Controller
         return view('pages.mahasiswa.register', compact("title"));
     }
 
-    public function home()
+    public function home($nama = "NAMA", $nim = "NIM", $status = "AKTIF")
     {
-        return view("pages.mahasiswa.home");
+        $nama = strtoupper($nama);
+        $nim = strtoupper($nim);
+        $status = strtoupper($status);
+        return view("pages.mahasiswa.home", compact("nama", "nim", "status"));
     }
 
-    public function profile()
+    public function profile($nama = "NAMA", $nim = "NIM", $status = "AKTIF")
     {
-        return view("pages.mahasiswa.profile");
+        $nama = strtoupper($nama);
+        $nim = strtoupper($nim);
+        $status = strtoupper($status);
+        return view("pages.mahasiswa.profile", compact("nama", "nim", "status"));
     }
 }
