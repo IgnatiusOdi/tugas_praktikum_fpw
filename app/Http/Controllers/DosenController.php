@@ -12,6 +12,10 @@ class DosenController extends Controller
         return view('pages.dosen.register', compact("title"));
     }
 
+    public function tryRegister() {
+
+    }
+
     public function home()
     {
         $listPelajaran = [

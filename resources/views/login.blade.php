@@ -1,24 +1,35 @@
 @extends('layouts.main')
 
-@section('title', "LOGIN")
+@section('title', 'LOGIN')
 
 @section('main')
     <div class="bg-secondary-focus min-h-screen">
+        @if (Session::has('message'))
+            <div class="toast toast-top toast-end">
+                <div class="alert alert-error">
+                    <div>
+                        <span>{{ Session::get('message') }}</span>
+                    </div>
+                </div>
+            </div>
+        @endif
         <div class="flex flex-col items-center justify-center mx-auto h-screen">
             <div class="text-5xl font-black mb-5">iH - class</div>
             <div class="card w-fit">
                 <form action="{{ route('try-login') }}" method="POST" class="form-control bg-secondary px-16 py-12">
                     @csrf
                     <div class="text-2xl font-bold text-center mb-4">Login</div>
+                    {{-- Username --}}
                     <label class="label">
                         <span class="label-text">Username</span>
                     </label>
-                    <input type="text" name="Username" placeholder="Username"
+                    <input type="text" name="username" placeholder="Username"
                         class="input input-bordered input-primary w-full bg-white" />
+                    {{-- Password --}}
                     <label class="label">
                         <span class="label-text">Password</span>
                     </label>
-                    <input type="password" name="Password" placeholder="Password"
+                    <input type="password" name="password" placeholder="Password"
                         class="input input-bordered input-primary w-full bg-white" />
                     <span class="text-right">
                         <a href="{{ route('login') }}" class="text-red-500">Forgot Password?</a>

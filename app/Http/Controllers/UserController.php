@@ -3,35 +3,44 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
     public function login(Request $request)
     {
-        $username = $request["Username"];
-        $password = $request["Password"];
+        $username = $request->username;
+        $password = $request->password;
 
-        if ($username == "admin" && $password == "admin") {
-            return redirect()->route("admin-dashboard");
-        } else if ($username == "mhs" && $password == "mhs") {
-            return redirect()->route("mahasiswa-home");
-        } else if ($username == "dosen" && $password == "dosen") {
-            return redirect()->route("dosen-home");
-        } else {
-            return redirect()->back();
+        //CEK KOSONG
+        if (empty($username) || empty($password)) {
+            return redirect()->back()->with("message", "Field tidak boleh kosong!");
         }
 
-        // foreach ($users as $user) {
-        //     if ($user["Username"] == $username && $user["Password"] == $password) {
-        //         $nama = $user["Nama Lengkap"];
-        //         $jurusan = $user["Jurusan"];
-        //         $status = $user["Status"];
-        //         if ($status == "Mahasiswa") {
-        //             return redirect("mahasiswa-home", compact("nama", "jurusan", "status"));
-        //         } else {
-        //             return redirect("dosen-home", compact("nama", "status"));
-        //         }
-        //     }
-        // }
+        //ADMIN LOGIN
+        if ($username == "admin" && $password == "admin") {
+            return redirect()->route("admin-dashboard");
+        }
+
+        //CEK TERDAFTAR
+        if (Session::has('listUser')) {
+            foreach (Session::get("listUser") as $user) {
+                //CEK USERNAME
+                if ($user->username == $username) {
+                    //CEK PASSWORD
+                    if ($user->password == $password) {
+                        if ($user->role == "Dosen") {
+                            return redirect()->route("dosen-home");
+                        } else {
+                            return redirect()->route("mahasiswa-home");
+                        }
+                    } else {
+                        return redirect()->back()->with("message", "Password salah!");
+                    }
+                }
+            }
+        }
+
+        return redirect()->back()->with("message", "User tidak ditemukan!");
     }
 }

@@ -23,7 +23,9 @@ Route::get('login', [PageController::class, 'login'])->name('login');
 Route::post("login", [UserController::class, 'login'])->name('try-login');
 Route::prefix('register')->group(function () {
     Route::get('/', [MahasiswaController::class, 'register'])->name('register-mahasiswa');
+    Route::post('/', [MahasiswaController::class, 'tryRegister'])->name('try-register-mahasiswa');
     Route::get('dosen', [DosenController::class, 'register'])->name('register-dosen');
+    Route::post('dosen', [DosenController::class, 'tryRegister'])->name('try-register-dosen');
 });
 Route::prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin-dashboard');
