@@ -9,6 +9,13 @@
             @endif
         </li>
         <li class="hover-bordered">
+            @if (request()->is('admin/matakuliah'))
+                <a class="active" href="{{ route('admin-matakuliah') }}">List Mata Kuliah</a>
+            @else
+                <a href="{{ route('admin-matakuliah') }}">List Mata Kuliah</a>
+            @endif
+        </li>
+        {{-- <li class="hover-bordered">
             @if (request()->is('admin/dosen'))
                 <a class="active" href="{{ route('admin-dosen') }}">List Dosen</a>
             @else
@@ -21,7 +28,7 @@
             @else
                 <a href="{{ route('admin-mahasiswa') }}">List Mahasiswa</a>
             @endif
-        </li>
+        </li> --}}
         <div class="w-full mt-8 text-center">
             <a href="{{ route('login') }}">
                 <button class="btn btn-outline btn-error">

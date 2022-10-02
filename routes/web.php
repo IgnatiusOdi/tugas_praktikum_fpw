@@ -29,6 +29,7 @@ Route::prefix('register')->group(function () {
 });
 Route::prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin-dashboard');
+    Route::get('matakuliah', [AdminController::class, 'matakuliah'])->name('admin-matakuliah');
     Route::get('dosen', [AdminController::class, 'dosen'])->name('admin-dosen');
     Route::get('mahasiswa', [AdminController::class, 'mahasiswa'])->name('admin-mahasiswa');
 });

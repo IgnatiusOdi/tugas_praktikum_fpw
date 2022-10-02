@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
@@ -45,5 +46,33 @@ class AdminController extends Controller
             ["NIM" => "220110000", "Nama Lengkap" => "Budi Santoso", "Gender" => "Laki - laki", "Status" => "Cuti"],
         ];
         return view("pages.admin.mahasiswa", compact("listMahasiswa"));
+    }
+
+    public function matakuliah()
+    {
+        Session::put('listMataKuliah', [
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+            ["kode" => "INFITP", "nama" => "Intro To Programming", "jurusan" => "S1-Informatika", "semester" => 1],
+        ]);
+        return view("pages.admin.matakuliah");
+    }
+
+    public function tambahMataKuliah() {
+
     }
 }
