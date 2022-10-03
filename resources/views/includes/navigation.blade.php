@@ -1,20 +1,27 @@
-<div class="navbar @if (request()->is('mahasiswa') || request()->is('mahasiswa/*'))
-    bg-warning
-@else
-    bg-primary
-@endif">
-    <div class="flex-1">
+<div class="navbar @if (request()->is('mahasiswa') || request()->is('mahasiswa/*')) bg-warning @else bg-primary @endif">
+    <div class="navbar-start">
+        <div class="dropdown">
+            <label tabindex="0" class="btn btn-ghost btn-circle">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+            </label>
+            <ul tabindex="0" class="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                <li><a href=@yield('kelas')>Kelas</a></li>
+                <li><a href=@yield('profile')>Profile</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="navbar-center">
         <a class="btn btn-ghost normal-case text-xl" href=@yield('home')>iH - class</a>
     </div>
-    <div class="flex-none">
-        <ul class="menu menu-horizontal p-0">
-            <li tabindex="0">
-                <span>{{ $nama }}</span>
-                <ul class="p-2 bg-base-100">
-                    <li><a href=@yield('profile')>Profile</a></li>
-                    <li><a href="{{ route('login') }}" class="text-red-400">Logout</a></li>
-                </ul>
-            </li>
-        </ul>
+    <div class="navbar-end">
+        <form action="{{ route('dosen-logout') }}" method="POST">
+            @csrf
+            <button class="btn btn-outline btn-error">
+                Logout
+            </button>
+        </form>
     </div>
 </div>

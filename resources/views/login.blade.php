@@ -4,15 +4,6 @@
 
 @section('main')
     <div class="bg-secondary-focus min-h-screen">
-        @if (Session::has('message'))
-            <div class="toast toast-top toast-end">
-                <div class="alert alert-error">
-                    <div>
-                        <span>{{ Session::get('message') }}</span>
-                    </div>
-                </div>
-            </div>
-        @endif
         <div class="flex flex-col items-center justify-center mx-auto h-screen">
             <div class="text-5xl font-black mb-5">iH - class</div>
             <div class="card w-fit">
@@ -32,15 +23,16 @@
                     <input type="password" name="password" placeholder="Password"
                         class="input input-bordered input-primary w-full bg-white" />
                     <span class="text-right">
-                        <a href="{{ route('login') }}" class="text-red-500">Forgot Password?</a>
+                        <a href="{{ route('login') }}" class="text-red-500">Lupa Password?</a>
                     </span>
                     <button class="btn bg-primary my-6">Login</button>
                     <span>
-                        Not registered as Mahasiswa? <a href="{{ route('register-mahasiswa') }}"
+                        Belum terdaftar sebagai Mahasiswa? <a href="{{ route('register-mahasiswa') }}"
                             class="text-blue-500">Register here</a>
                     </span>
                     <span>
-                        Not registered as Dosen? <a href="{{ route('register-dosen') }}" class="text-green-600">Register
+                        Belum terdaftar sebagai Dosen? <a href="{{ route('register-dosen') }}"
+                            class="text-green-600">Register
                             here</a>
                     </span>
                 </form>

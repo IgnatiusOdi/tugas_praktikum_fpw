@@ -11,6 +11,23 @@
 </head>
 
 <body>
+    @if (Session::has('message'))
+        <div class="toast toast-top toast-end">
+            <div class="alert alert-error shadow-lg">
+                <div>
+                    <span>{{ Session::get('message') }}</span>
+                </div>
+            </div>
+        </div>
+    @elseif (Session::has('success'))
+        <div class="toast toast-top toast-end">
+            <div class="alert alert-success shadow-lg">
+                <div>
+                    <span>{{ Session::get('success') }}</span>
+                </div>
+            </div>
+        </div>
+    @endif
     @yield('main')
 </body>
 
