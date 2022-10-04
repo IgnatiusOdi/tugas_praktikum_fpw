@@ -9,6 +9,12 @@ use Symfony\Component\Console\Input\Input;
 
 class MahasiswaController extends Controller
 {
+    public function logout()
+    {
+        Session::forget('mahasiswa');
+        return redirect()->intended("login")->with("success", "Berhasil logout!");
+    }
+
     public function viewRegister()
     {
         return view('pages.mahasiswa.register');
@@ -27,30 +33,30 @@ class MahasiswaController extends Controller
 
         //CEK FIELD KOSONG
         if (empty($nama) || empty($email) || empty($nomor) || empty($tanggal) || empty($jurusan) || empty($tahun)) {
-            return back()->withInput($request->input())->with("message", "Field tidak boleh kosong!");
+            return back()->withInput()->with("message", "Field tidak boleh kosong!");
         }
 
         //CEK SYARAT DAN KETENTUAN
         if (!$snk) {
-            return back()->withInput($request->input())->with("message", "Syarat dan Ketentuan harus disetujui!");
+            return back()->withInput()->with("message", "Syarat dan Ketentuan harus disetujui!");
         }
 
         //CEK EMAIL / NOMOR TELEPON KEMBAR
         if (Session::has('listMahasiswa')) {
             foreach (Session::get('listMahasiswa') as $mahasiswa) {
                 if ($mahasiswa['email'] == $email) {
-                    return back()->withInput($request->input())->with("message", "Email harus unique!");
+                    return back()->withInput()->with("message", "Email harus unique!");
                 } else if ($mahasiswa['nomor'] == $nomor) {
-                    return back()->withInput($request->input())->with("message", "Nomor telepon harus unique!");
+                    return back()->withInput()->with("message", "Nomor telepon harus unique!");
                 }
             }
         }
         if (Session::has('listDosen')) {
             foreach (Session::get('listDosen') as $dosen) {
                 if ($dosen['email'] == $email) {
-                    return back()->withInput($request->input())->with("message", "Email harus unique!");
+                    return back()->withInput()->with("message", "Email harus unique!");
                 } else if ($dosen['nomor'] == $nomor) {
-                    return back()->withInput($request->input())->with("message", "Nomor telepon harus unique!");
+                    return back()->withInput()->with("message", "Nomor telepon harus unique!");
                 }
             }
         }

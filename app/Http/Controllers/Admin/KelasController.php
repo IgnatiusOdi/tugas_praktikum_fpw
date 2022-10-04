@@ -10,25 +10,34 @@ class KelasController extends Controller
 {
     public function view()
     {
+        // Session::put('listKelas', []);
         return view("pages.admin.kelas");
     }
 
     public function tambah(Request $request)
     {
-        $matakuliah = $request->matakuliah;
+        $matakuliah = explode('-', $request->matakuliah);
         $hari = $request->hari;
         $jam = $request->jam;
         $periode = $request->periode;
-        $dosen = $request->dosen;
+        $dosen = explode('-', $request->dosen);
 
+        //CEK FIELD KOSONG
         if (empty($matakuliah) || empty($periode) || empty($dosen)) {
             return back()->with("message", "Field tidak boleh kosong!");
         }
 
-        //TODO
-        //CEK DOSEN SAMA
+        $namaMatkul = $matakuliah[0];
+        $jurusanMatkul = $matakuliah[1];
+        $namaDosen = $dosen[0];
+        $jurusanDosen = $dosen[1];
 
-        Session::push("listKelas", ["matakuliah" => $matakuliah, "hari" => $hari, "jam" => $jam, "periode" => $periode, "dosen" => $dosen]);
+        //CEK DOSEN JURUSAN SAMA
+        if ($jurusanMatkul != $jurusanDosen) {
+            return back()->with("message", "Jurusan Dosen dan Jurusan Mata Kuliah harus sama!");
+        }
+
+        Session::push("listKelas", ["matakuliah" => $namaMatkul, "hari" => $hari, "jam" => $jam, "periode" => $periode, "dosen" => $namaDosen]);
         return back()->with("success", "Berhasil menambahkan kelas!");
     }
 
@@ -39,11 +48,11 @@ class KelasController extends Controller
             foreach ($listKelas as $key => $kelas) {
                 if ($kelas['matakuliah'] == $request->matakuliah) {
                     unset($listKelas[$key]);
-                    break;
+                    Session::put('listKelas', $listKelas);
+                    return back()->with("success", "Berhasil menghapus kelas!");
                 }
             }
-            Session::put('listKelas', $listKelas);
         }
-        return back()->with("success", "Berhasil menghapus kelas!");
+        return back()->with("message", "Gagal menghapus kelas!");
     }
 }

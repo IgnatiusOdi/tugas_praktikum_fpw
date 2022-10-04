@@ -51,13 +51,21 @@
                             <tr>
                                 <th>{{ $matkul['kode'] }}</th>
                                 <td>{{ $matkul['nama'] }}</td>
-                                <td>{{ $matkul['jurusan'] }}</td>
+                                <td>
+                                    @if ($matkul['jurusan'] == 'INF')
+                                        S1-Informatika
+                                    @elseif ($matkul['jurusan'] == 'SIB')
+                                        S1-Sistem Informasi Bisnis
+                                    @elseif ($matkul['jurusan'] == 'DKV')
+                                        S1-Desain Komunikasi Visual
+                                    @endif
+                                </td>
                                 <td>{{ $matkul['semester'] }}</td>
                                 <td>
                                     <form action="{{ route('admin-hapus-matakuliah') }}" method="POST">
                                         @csrf
                                         <button name="kode" value="{{ $matkul['kode'] }}"
-                                            class="btn btn-error w-full">Delete</button>
+                                            class="btn btn-error w-2/3">Delete</button>
                                     </form>
                                 </td>
                             </tr>

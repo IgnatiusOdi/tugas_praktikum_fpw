@@ -10,6 +10,7 @@ class MataKuliahController extends Controller
 {
     public function view()
     {
+        // Session::put('listMataKuliah', []);
         return view("pages.admin.matakuliah");
     }
 
@@ -19,10 +20,12 @@ class MataKuliahController extends Controller
         $jurusan = $request->jurusan;
         $semester = $request->semester;
 
+        //CEK FIELD KOSONG
         if (empty($nama) || empty($semester)) {
             return back()->with("message", "Field tidak boleh kosong!");
         }
 
+        //CREATE KODE
         $words = explode(' ', $nama);
         $kode = $jurusan;
         if (count($words) > 1) {
@@ -31,13 +34,6 @@ class MataKuliahController extends Controller
             }
         } else {
             $kode .= $words[0][0] . $words[0][1];
-        }
-        if ($jurusan == "INF") {
-            $jurusan = "S1-Informatika";
-        } else if ($jurusan == "SIB") {
-            $jurusan = "S1-Sistem Informasi Bisnis";
-        } else if ($jurusan == "DKV") {
-            $jurusan = "S1-Desain Komunikasi Visual";
         }
 
         Session::push("listMataKuliah", ["kode" => $kode, "nama" => $nama, "jurusan" => $jurusan, "semester" => $semester]);
@@ -51,11 +47,11 @@ class MataKuliahController extends Controller
             foreach ($listMataKuliah as $key => $matkul) {
                 if ($matkul['kode'] == $request->kode) {
                     unset($listMataKuliah[$key]);
-                    break;
+                    Session::put('listMataKuliah', $listMataKuliah);
+                    return back()->with("success", "Berhasil menghapus mata kuliah!");
                 }
             }
-            Session::put('listMataKuliah', $listMataKuliah);
         }
-        return back()->with("success", "Berhasil menghapus mata kuliah!");
+        return back()->with("message", "Gagal menghapus mata kuliah!");
     }
 }

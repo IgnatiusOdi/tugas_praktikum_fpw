@@ -25,13 +25,6 @@
         </li>
         </li>
         <li class="hover-bordered">
-            @if (request()->is('admin/periode/set'))
-                <a class="active" href="{{ route('admin-set-periode') }}">Set Periode</a>
-            @else
-                <a href="{{ route('admin-set-periode') }}">Set Periode</a>
-            @endif
-        </li>
-        <li class="hover-bordered">
             @if (request()->is('admin/kelas'))
                 <a class="active" href="{{ route('admin-kelas') }}">Kelas</a>
             @else

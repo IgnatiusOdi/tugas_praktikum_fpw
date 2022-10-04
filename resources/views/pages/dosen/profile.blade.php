@@ -14,6 +14,7 @@
                 <form action="{{ route('dosen-edit-profile') }}" method="POST">
                     @csrf
                     <h2 class="card-title">Nama : {{ Session::get('dosen')['nama'] }}</h2>
+                    <input type="hidden" name="nama" value="{{ Session::get('dosen')['nama'] }}">
                     <p>Username :
                         <input type="text" name="username" value="{{ Session::get('dosen')['username'] }}"
                             placeholder="Username" class="input input-ghost w-full font-medium">
@@ -41,8 +42,12 @@
                         <input type="password" name="password" value="{{ Session::get('dosen')['password'] }}"
                             placeholder="Password" class="input input-ghost w-full font-medium">
                     </p>
+                    <p>Confirm Password :
+                        <input type="password" name="confirmation" value="" placeholder="Confirm Password"
+                            class="input input-ghost w-full font-medium">
+                    </p>
                     <div class="card-actions justify-end">
-                        <button class="btn btn-info">Edit Profile</button>
+                        <button class="btn btn-info mt-4">Edit Profile</button>
                     </div>
                 </form>
             </div>

@@ -15,11 +15,9 @@
                     <span class="label-text">Mata Kuliah</span>
                 </label>
                 <select name="matakuliah" class="select select-primary w-full">
-                    @if (Session::has('listMataKuliah'))
-                        @foreach (Session::get('listMataKuliah') as $matkul)
-                            <option value="{{ $matkul['kode'] }}">{{ $matkul['nama'] }}</option>
-                        @endforeach
-                    @endif
+                    @foreach (Session::get('listMataKuliah') as $matkul)
+                        <option value="{{ $matkul['nama'] . '-' . $matkul['jurusan'] }}">{{ $matkul['nama'] }}</option>
+                    @endforeach
                 </select>
                 {{-- Hari --}}
                 <label class="label">
@@ -47,22 +45,24 @@
                     <span class="label-text">Periode</span>
                 </label>
                 <select name="periode" class="select select-primary w-full">
-                    @if (Session::has('listPeriode'))
-                        @foreach (Session::get('listPeriode') as $periode)
-                            <option value="{{ $periode['kode'] }}">{{ $periode['nama'] }}</option>
-                        @endforeach
-                    @endif
+                    @foreach (Session::get('listPeriode') as $periode)
+                        <option value="{{ $periode['tahun'] }}">
+                            @php
+                                $p = explode('-', $periode['tahun']);
+                                $p = $p[0] . '/' . $p[1];
+                            @endphp
+                            {{ $p }}
+                        </option>
+                    @endforeach
                 </select>
                 {{-- Dosen Pengajar --}}
                 <label class="label">
                     <span class="label-text">Dosen Pengajar</span>
                 </label>
                 <select name="dosen" class="select select-primary w-full">
-                    @if (Session::has('listDosen'))
-                        @foreach (Session::get('listDosen') as $dosen)
-                            <option value="{{ $dosen['kode'] }}">{{ $dosen['nama'] }}</option>
-                        @endforeach
-                    @endif
+                    @foreach (Session::get('listDosen') as $dosen)
+                        <option value="{{ $dosen['nama'] . '-' . $dosen['jurusan'] }}">{{ $dosen['nama'] }}</option>
+                    @endforeach
                 </select>
                 <button class="btn bg-primary my-6">Tambah</button>
             </form>
@@ -80,28 +80,32 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Session::has('listKelas'))
-                        @forelse (Session::get('listKelas') as $kelas)
-                            <tr>
-                                <th>{{ $kelas['matakuliah'] }}</th>
-                                <td>{{ $kelas['hari'] }}</td>
-                                <td>{{ $kelas['jam'] }}</td>
-                                <td>{{ $kelas['periode'] }}</td>
-                                <td>{{ $kelas['dosen'] }}</td>
-                                <td>
-                                    <form action="{{ route('admin-hapus-kelas') }}" method="POST">
-                                        @csrf
-                                        <button name="matakuliah" value="{{ $kelas['matakuliah'] }}"
-                                            class="btn btn-error w-full">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center font-bold">Tidak ada kelas saat ini!</td>
-                            </tr>
-                        @endforelse
-                    @endif
+                    @forelse (Session::get('listKelas') as $kelas)
+                        <tr>
+                            <th>{{ $kelas['matakuliah'] }}</th>
+                            <td>{{ $kelas['hari'] }}</td>
+                            <td>{{ $kelas['jam'] }}</td>
+                            <td>
+                                @php
+                                    $p = explode('-', $kelas['periode']);
+                                    $p = $p[0] . '/' . $p[1];
+                                @endphp
+                                {{ $p }}
+                            </td>
+                            <td>{{ $kelas['dosen'] }}</td>
+                            <td>
+                                <form action="{{ route('admin-hapus-kelas') }}" method="POST">
+                                    @csrf
+                                    <button name="matakuliah" value="{{ $kelas['matakuliah'] }}"
+                                        class="btn btn-error w-full">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center font-bold">Tidak ada kelas saat ini!</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

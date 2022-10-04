@@ -24,9 +24,6 @@
                 <input type="number" name="tahun2" placeholder="Tahun 2" min="{{ date('Y') }}"
                     max="{{ date('Y') + 10 }}" class="input input-bordered input-primary w-full bg-white"
                     value="{{ date('Y') + 1 }}" />
-                <label class="label">
-                    <span class="label-text">Format : Tahun 1/Tahun 2, ex: 2022/2023</span>
-                </label>
                 <button class="btn bg-primary my-6">Tambah</button>
             </form>
         </div>
@@ -43,13 +40,22 @@
                     @if (Session::has('listPeriode'))
                         @forelse (Session::get('listPeriode') as $periode)
                             <tr>
-                                <th>{{ $periode['tahun'] }}</th>
+                                <th>
+                                    @php
+                                        $p = explode('-', $periode['tahun']);
+                                        $p = $p[0] . '/' . $p[1];
+                                    @endphp
+                                    {{ $p }}
+                                </th>
                                 <td>{{ $periode['status'] == 0 ? 'Tidak Aktif' : 'Aktif' }}</td>
                                 <td>
-                                    <form action="{{ route('admin-hapus-periode') }}" method="POST">
+                                    <form action="{{ route('admin-action-periode') }}" method="POST">
                                         @csrf
-                                        <button name="tahun" value="{{ $periode['tahun'] }}"
-                                            class="btn btn-error w-full">Delete</button>
+                                        <button name="change" value="{{ $periode['status'] }}"
+                                            class="btn btn-info w-1/3">Change Status</button>
+                                        <button name="delete" value="{{ $periode['tahun'] }}"
+                                            class="btn btn-error w-1/3">Delete</button>
+                                        <input type="hidden" name="tahun" value="{{ $periode['tahun'] }}">
                                     </form>
                                 </td>
                             </tr>

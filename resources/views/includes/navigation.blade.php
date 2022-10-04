@@ -19,7 +19,7 @@
     <div class="navbar-end">
         <form action="{{ route('dosen-logout') }}" method="POST">
             @csrf
-            <button class="btn btn-outline btn-error">
+            <button class="btn btn-outline @if (request()->is('mahasiswa') || request()->is('mahasiswa/*')) btn-info @else btn-error @endif">
                 Logout
             </button>
         </form>

@@ -5,65 +5,75 @@
 @section('content')
     <div class="w-full bg-secondary">
         <div class="font-bold text-5xl p-10">Welcome, Admin!</div>
-        <div class="font-bold text-2xl p-10 bg-primary-focus text-secondary">List Mata Kuliah</div>
-        <div class="text-xl p-4">Total mata kuliah yang ada: {{ count($listPelajaran) }} mata kuliah</div>
+        <div class="font-bold text-3xl p-10">Progress saat ini :</div>
+        <div class="radial-progress text-primary border-4 border-primary mx-10"
+            style="--value:28.5; --size:14rem; --thickness: 1rem;">28.5%</div>
+        {{-- <div class="font-bold text-2xl p-10 bg-primary-focus text-secondary">List Mata Kuliah</div>
+        <div class="text-xl p-4">Total mata kuliah yang ada: {{ count(Session::get('listMataKuliah')) }} mata kuliah</div>
         <div class="grid grid-cols-4 gap-4 p-4">
-            @foreach ($listPelajaran as $pelajaran)
+            @forelse (Session::get('listMataKuliah') as $matkul)
                 <div class="card w-full glass">
                     <figure><img src="https://placeimg.com/400/225/arch" alt="Foto Pelajaran" /></figure>
                     <div class="card-body">
-                        <h2 class="card-title">{{ $pelajaran }}</h2>
+                        <h2 class="card-title">{{ $matkul }}</h2>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div>Tidak ada mata kuliah saat ini!</div>
+            @endforelse
         </div>
         <div class="font-bold text-2xl p-10 bg-primary-focus text-secondary">List Dosen</div>
-        <div class="text-xl p-4">Total dosen yang ada: {{ count($listDosen) }} dosen</div>
+        <div class="text-xl p-4">Total dosen yang ada: {{ count(Session::get('listDosen')) }} dosen</div>
         <div class="carousel mx-auto w-1/2">
-            @foreach ($listDosen as $key => $dosen)
+            @forelse (Session::get('listDosen') as $key => $dosen)
                 <div id="slide{{ $key }}" class="carousel-item relative w-full">
                     <div class="card w-full bg-primary-content mb-4">
-                        <figure><img src="https://placeimg.com/400/225/arch" alt="Foto Dosen" class="mt-4 rounded"/></figure>
-                        <div class="card-body px-32 @if ($dosen['Status'] == 'Cuti') bg-base-300 @endif">
-                            <h2 class="card-title">{{ $dosen['Nama Lengkap'] }}</h2>
-                            <p>{{ $dosen['Gender'] }}</p>
+                        <figure><img src="https://placeimg.com/400/225/arch" alt="Foto Dosen" class="mt-4 rounded" />
+                        </figure>
+                        <div class="card-body px-32">
+                            <h2 class="card-title">{{ $dosen['nama'] }}</h2>
+                            <p>{{ $dosen['jurusan'] }}</p>
                             <div class="card-actions justify-end">
-                                <div class="badge badge-outline">{{ $dosen['Status'] }}</div>
+                                <div class="badge badge-outline">{{ $dosen['nomor'] }}</div>
                             </div>
                         </div>
                     </div>
                     <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/3">
-                        <a href="@if ($key > 0) #slide{{ $key - 1 }} @else #slide{{ count($listDosen) - 1 }} @endif"
+                        <a href="@if ($key > 0) #slide{{ $key - 1 }} @else #slide{{ count(Session::get('listDosen')) - 1 }} @endif"
                             class="btn btn-circle">❮</a>
-                        <a href="@if ($key < count($listDosen) - 1) #slide{{ $key + 1 }} @else #slide0 @endif"
+                        <a href="@if ($key < count(Session::get('listDosen')) - 1) #slide{{ $key + 1 }} @else #slide0 @endif"
                             class="btn btn-circle">❯</a>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div>Tidak ada doesn saat ini!</div>
+            @endforelse
         </div>
         <div class="font-bold text-2xl p-10 bg-primary-focus text-secondary">List Mahasiswa</div>
-        <div class="text-xl p-4">Total mahasiswa yang ada: {{ count($listMahasiswa) }} mahasiswa</div>
-        <div class="overflow-x-auto">
-            <table class="table table-zebra w-full mb-h-screen">
+        <div class="text-xl p-4">Total mahasiswa yang ada: {{ count(Session::get('listMahasiswa')) }} mahasiswa</div>
+        <div class="overflow-x-auto px-8 py-4">
+            <table class="table table-compact table-zebra w-full text-center">
                 <thead>
                     <tr>
-                        <th>NIM</th>
+                        <th>NRP</th>
                         <th>Nama Lengkap</th>
-                        <th>Gender</th>
-                        <th>Status</th>
+                        <th>Password</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($listMahasiswa as $mahasiswa)
-                        <tr class="@if ($mahasiswa['Status'] == 'Cuti') bg-neutral-focus @else hover @endif">
-                            <th>{{ $mahasiswa['NIM'] }}</th>
-                            <td>{{ $mahasiswa['Nama Lengkap'] }}</td>
-                            <td>{{ $mahasiswa['Gender'] }}</td>
-                            <td>{{ $mahasiswa['Status'] }}</td>
+                    @forelse (Session::get('listMahasiswa') as $mahasiswa)
+                        <tr>
+                            <th>{{ $mahasiswa['nrp'] }}</th>
+                            <td>{{ $mahasiswa['nama'] }}</td>
+                            <td>{{ $mahasiswa['password'] }}</td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="3">Tidak ada mahasiswa saat ini!</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
-        </div>
+        </div> --}}
     </div>
 @endsection

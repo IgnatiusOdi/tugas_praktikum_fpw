@@ -1,20 +1,25 @@
 <?php
 
+//ADMIN
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\DosenController as AdminDosenController;
 use App\Http\Controllers\Admin\KelasController as AdminKelasController;
 use App\Http\Controllers\Admin\MahasiswaController as AdminMahasiswaController;
 use App\Http\Controllers\Admin\MataKuliahController;
 use App\Http\Controllers\Admin\PeriodeController;
-use App\Http\Controllers\Admin\SetPeriodeController;
+
+//DOSEN
 use App\Http\Controllers\Dosen\DosenController;
 use App\Http\Controllers\Dosen\HomeController as DosenHomeController;
 use App\Http\Controllers\Dosen\KelasController as DosenKelasController;
 use App\Http\Controllers\Dosen\ProfileController as DosenProfileController;
+
+//MAHASISWA
 use App\Http\Controllers\Mahasiswa\MahasiswaController;
 use App\Http\Controllers\Mahasiswa\HomeController as MahasiswaHomeController;
 use App\Http\Controllers\Mahasiswa\KelasController as MahasiswaKelasController;
 use App\Http\Controllers\Mahasiswa\ProfileController as MahasiswaProfileController;
+
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +53,7 @@ Route::prefix('register')->group(function () {
 
 //ADMIN
 Route::prefix('admin')->group(function () {
+    //DASHBOARD
     Route::get('/', [AdminController::class, 'view'])->name('admin');
     //MATA KULIAH
     Route::prefix('matakuliah')->group(function () {
@@ -59,8 +65,7 @@ Route::prefix('admin')->group(function () {
     Route::prefix('periode')->group(function () {
         Route::get('/', [PeriodeController::class, 'view'])->name('admin-periode');
         Route::post('tambah', [PeriodeController::class, 'tambah'])->name('admin-tambah-periode');
-        Route::post('hapus', [PeriodeController::class, 'hapus'])->name('admin-hapus-periode');
-        Route::get('set', [SetPeriodeController::class, 'view'])->name('admin-set-periode');
+        Route::post('action', [PeriodeController::class, 'action'])->name('admin-action-periode');
     });
     //KELAS
     Route::prefix('kelas')->group(function () {
@@ -74,17 +79,23 @@ Route::prefix('admin')->group(function () {
 
 //DOSEN
 Route::prefix('dosen')->group(function () {
+    //HOME
     Route::get('/', [DosenHomeController::class, "view"])->name("dosen");
     Route::post('/', [DosenController::class, "logout"])->name("dosen-logout");
+    //KELAS
     Route::get('kelas/{kode_periode?}', [DosenKelasController::class, 'view'])->name("dosen-kelas");
+    //PROFILE
     Route::get('profile', [DosenProfileController::class, "view"])->name("dosen-profile");
     Route::post('profile', [DosenProfileController::class, "edit"])->name("dosen-edit-profile");
 });
 
 //MAHASISWA
 Route::prefix('mahasiswa')->group(function () {
+    //HOME
     Route::get('/', [MahasiswaHomeController::class, "view"])->name("mahasiswa");
+    //KELAS
     Route::get('kelas/{kode_periode?}', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
+    //PROFILE
     Route::get('profile', [MahasiswaProfileController::class, "view"])->name("mahasiswa-profile");
     Route::post('profile', [MahasiswaProfileController::class, "edit"])->name("mahasiswa-edit-profile");
 });

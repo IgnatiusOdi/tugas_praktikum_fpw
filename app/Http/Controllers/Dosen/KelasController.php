@@ -7,8 +7,15 @@ use Illuminate\Http\Request;
 
 class KelasController extends Controller
 {
-    public function view()
+    public function view(Request $request)
     {
-        return view("pages.dosen.kelas");
+        $url = $request->segment(3);
+        $periode = "";
+        if (isset($url)) {
+            $listPeriode = explode('-', $url);
+            $periode = $listPeriode[0] . "/" . $listPeriode[1];
+        }
+
+        return view("pages.dosen.kelas", compact("url", "periode"));
     }
 }

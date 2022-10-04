@@ -18,6 +18,8 @@ class UserController extends Controller
         Session::put("listMataKuliah", $listMataKuliah);
         $listPeriode = Session::get('listPeriode') ?? [];
         Session::put("listPeriode", $listPeriode);
+        $periodeAktif = Session::get('periodeAktif') ?? [];
+        Session::put('periodeAktif', $periodeAktif);
         $listKelas = Session::get('listKelas') ?? [];
         Session::put("listKelas", $listKelas);
 
@@ -25,6 +27,7 @@ class UserController extends Controller
         dump($listDosen);
         dump($listMataKuliah);
         dump($listPeriode);
+        dump($periodeAktif);
         dump($listKelas);
         return view('login');
     }

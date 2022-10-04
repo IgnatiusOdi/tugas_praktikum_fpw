@@ -35,44 +35,40 @@ class DosenController extends Controller
 
         //CEK FIELD KOSONG
         if (empty($nama) || empty($username) || empty($email) || empty($nomor) || empty($tanggal) || empty($jurusan) || empty($tahun) || empty($password) || empty($confirmation)) {
-            return back()->withInput($request->input())->with("message", "Field tidak boleh kosong!");
+            return back()->withInput()->with("message", "Field tidak boleh kosong!");
         }
 
         //CEK SYARAT DAN KETENTUAN
         if (!$snk) {
-            return back()->withInput($request->input())->with("message", "Syarat dan Ketentuan harus disetujui!");
+            return back()->withInput()->with("message", "Syarat dan Ketentuan harus disetujui!");
         }
 
         //CEK USERNAME ADMIN
         if ($username == "admin") {
-            return back()->withInput($request->input())->with("message", "Username tidak boleh admin!");
+            return back()->withInput()->with("message", "Username tidak boleh admin!");
         }
 
         //CEK PASSWORD DAN CONFIRMATION
         if ($password != $confirmation) {
-            return back()->withInput($request->input())->with("message", "Password dan confirmation harus sama!");
+            return back()->withInput()->with("message", "Password dan Confirm Password harus sama!");
         }
 
         //CEK EMAIL / NOMOR TELEPON KEMBAR
-        if (Session::has('listMahasiswa')) {
-            foreach (Session::get('listMahasiswa') as $mahasiswa) {
-                if ($mahasiswa['email'] == $email) {
-                    return back()->withInput($request->input())->with("message", "Email harus unique!");
-                } else if ($mahasiswa['nomor'] == $nomor) {
-                    return back()->withInput($request->input())->with("message", "Nomor telepon harus unique!");
-                }
+        foreach (Session::get('listMahasiswa') as $mahasiswa) {
+            if ($mahasiswa['email'] == $email) {
+                return back()->withInput()->with("message", "Email harus unique!");
+            } else if ($mahasiswa['nomor'] == $nomor) {
+                return back()->withInput()->with("message", "Nomor telepon harus unique!");
             }
         }
         //+CEK USERNAME KEMBAR
-        if (Session::has('listDosen')) {
-            foreach (Session::get('listDosen') as $dosen) {
-                if ($dosen['username'] == $username) {
-                    return back()->withInput($request->input())->with("message", "Username harus unique!");
-                } else if ($dosen['email'] == $email) {
-                    return back()->withInput($request->input())->with("message", "Email harus unique!");
-                } else if ($dosen['nomor'] == $nomor) {
-                    return back()->withInput($request->input())->with("message", "Nomor telepon harus unique!");
-                }
+        foreach (Session::get('listDosen') as $dosen) {
+            if ($dosen['username'] == $username) {
+                return back()->withInput()->with("message", "Username harus unique!");
+            } else if ($dosen['email'] == $email) {
+                return back()->withInput()->with("message", "Email harus unique!");
+            } else if ($dosen['nomor'] == $nomor) {
+                return back()->withInput()->with("message", "Nomor telepon harus unique!");
             }
         }
 
