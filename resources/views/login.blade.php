@@ -16,15 +16,18 @@
                     </label>
                     <input type="text" name="username" placeholder="Username"
                         class="input input-bordered input-primary w-full bg-white" />
+                    @error('username')
+                        <span class="text-red-500">{{ $message }}</span>
+                    @enderror
                     {{-- Password --}}
                     <label class="label">
                         <span class="label-text">Password</span>
                     </label>
                     <input type="password" name="password" placeholder="Password"
                         class="input input-bordered input-primary w-full bg-white" />
-                    <span class="text-right">
-                        <a href="{{ route('login') }}" class="text-red-500">Lupa Password?</a>
-                    </span>
+                    @error('password')
+                        <span class="text-red-500">{{ $message }}</span>
+                    @enderror
                     <button class="btn bg-primary my-6">Login</button>
                     <span>
                         Belum terdaftar sebagai Mahasiswa? <a href="{{ route('register-mahasiswa') }}"

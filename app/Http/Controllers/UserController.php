@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\CekTerdaftar;
+use App\Rules\RuleLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -10,10 +12,8 @@ class UserController extends Controller
     public function viewLogin()
     {
         // Session::flush();
-        $listMahasiswa = Session::get('listMahasiswa') ?? [];
-        Session::put("listMahasiswa", $listMahasiswa);
-        $listDosen = Session::get('listDosen') ?? [];
-        Session::put("listDosen", $listDosen);
+        $listUser = Session::get('listUser') ?? [];
+        Session::put("listUser", $listUser);
         $listMataKuliah = Session::get('listMataKuliah') ?? [];
         Session::put("listMataKuliah", $listMataKuliah);
         $listPeriode = Session::get('listPeriode') ?? [];
@@ -23,8 +23,7 @@ class UserController extends Controller
         $listKelas = Session::get('listKelas') ?? [];
         Session::put("listKelas", $listKelas);
 
-        dump($listMahasiswa);
-        dump($listDosen);
+        dump($listUser);
         dump($listMataKuliah);
         dump($listPeriode);
         dump($periodeAktif);
@@ -34,13 +33,18 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate(
+            [
+                "username" => ["required", new RuleLogin(Session::get('listUser'))],
+                "password" => "required",
+            ],
+            [
+                "required" => "Field wajib diisi!",
+            ]
+        );
+
         $username = $request->username;
         $password = $request->password;
-
-        //CEK KOSONG
-        if (empty($username) || empty($password)) {
-            return back()->with("message", "Field tidak boleh kosong!");
-        }
 
         //ADMIN LOGIN
         if ($username == "admin" && $password == "admin") {
@@ -48,38 +52,25 @@ class UserController extends Controller
             return redirect()->route("admin");
         }
 
-        //CEK TERDAFTAR DOSEN
-        if (Session::has('listDosen')) {
-            foreach (Session::get("listDosen") as $dosen) {
-                //CEK USERNAME
-                if ($dosen['username'] == $username) {
-                    //CEK PASSWORD
-                    if ($dosen['password'] == $password) {
-                        Session::put('dosen', $dosen);
+        //CEK USER LOGIN
+        foreach (Session::get('listUser') as $user) {
+            //CEK USERNAME
+            if ($user['username'] == $username) {
+                //CEK PASSWORD
+                if ($user['password'] == $password) {
+                    //CEK ROLE
+                    if ($user['role'] == "dosen") {
+                        Session::put('dosen', $user);
                         return redirect()->route("dosen");
                     } else {
-                        return back()->with("message", "Password salah!");
+                        Session::put('mahasiswa', $user);
+                        return redirect()->route('mahasiswa');
                     }
                 }
             }
         }
 
-        //CEK TERDAFTAR MAHASISWA
-        if (Session::has('listMahasiswa')) {
-            foreach (Session::get("listMahasiswa") as $mahasiswa) {
-                //CEK USERNAME
-                if ($mahasiswa['nrp'] == $username) {
-                    //CEK PASSWORD
-                    if ($mahasiswa['password'] == $password) {
-                        Session::put('mahasiswa', $mahasiswa);
-                        return redirect()->route("mahasiswa");
-                    } else {
-                        return back()->with("message", "Password salah!");
-                    }
-                }
-            }
-        }
-
-        return back()->with("message", "User tidak terdaftar!");
+        //JIKA TIDAK ADA, BERARTI PASSWORD SALAH
+        return back()->withErrors(["password" => "Password salah!"]);
     }
 }

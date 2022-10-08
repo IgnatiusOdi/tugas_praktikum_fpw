@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
+use App\Rules\RuleNomorTelepon;
+use App\Rules\RulePassword;
+use App\Rules\RuleUsername;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -16,72 +19,49 @@ class DosenController extends Controller
 
     public function viewRegister()
     {
+        // Session::flush();
         return view('pages.dosen.register');
     }
 
     public function register(Request $request)
     {
-        // Session::flush();
-        $nama = $request->nama;
-        $username = $request->username;
-        $email = $request->email;
-        $nomor = $request->nomor;
-        $tanggal = $request->tanggal;
-        $jurusan = $request->jurusan;
-        $tahun = $request->tahun;
-        $password = $request->password;
-        $confirmation = $request->confirmation;
-        $snk = $request->has('snk');
+        $request->validate(
+            [
+                "username" => ["required", "alpha_dash", "min:5", "max:10", new RuleUsername(Session::get('listUser'))],
+                "nama" => "required",
+                "email" => "required | email",
+                "nomor" => ["required", "numeric", "digits_between:10,12", new RuleNomorTelepon(Session::get('listUser'))],
+                "tanggal" => "required | date | before:-22 years",
+                "jurusan" => "required",
+                "tahun" => "required | date | after_or_equal:01/01/1990 | before:today",
+                "password" => ["required", "alpha_dash", "min:6", "max:12",  new RulePassword($request->username), "confirmed"],
+                "password_confirmation" => "required",
+                "snk" => "accepted"
+            ],
+            [
+                "required" => "Field wajib diisi!",
+                "tahun.after" => "Minimal tanggal adalah 1 Januari 1990!",
+                "tahun.before" => "Maksimal tanggal adalah kemarin!",
+                "digits_between" => "Nomor telepon minimal 10 digit dan maksimal 12 digit!",
+                "email" => "Email yang digunakan harus email valid!",
+                "tanggal.before" => "Umur harus lebih dari 21 tahun!",
+                "accepted" => "Konfirmasi syarat dan ketentuan harus tercentang!",
+            ]
+        );
 
-        //CEK FIELD KOSONG
-        if (empty($nama) || empty($username) || empty($email) || empty($nomor) || empty($tanggal) || empty($jurusan) || empty($tahun) || empty($password) || empty($confirmation)) {
-            return back()->withInput()->with("message", "Field tidak boleh kosong!");
-        }
-
-        //CEK SYARAT DAN KETENTUAN
-        if (!$snk) {
-            return back()->withInput()->with("message", "Syarat dan Ketentuan harus disetujui!");
-        }
-
-        //CEK USERNAME ADMIN
-        if ($username == "admin") {
-            return back()->withInput()->with("message", "Username tidak boleh admin!");
-        }
-
-        //CEK PASSWORD DAN CONFIRMATION
-        if ($password != $confirmation) {
-            return back()->withInput()->with("message", "Password dan Confirm Password harus sama!");
-        }
-
-        //CEK EMAIL / NOMOR TELEPON KEMBAR
-        foreach (Session::get('listMahasiswa') as $mahasiswa) {
-            if ($mahasiswa['email'] == $email) {
-                return back()->withInput()->with("message", "Email harus unique!");
-            } else if ($mahasiswa['nomor'] == $nomor) {
-                return back()->withInput()->with("message", "Nomor telepon harus unique!");
-            }
-        }
-        //+CEK USERNAME KEMBAR
-        foreach (Session::get('listDosen') as $dosen) {
-            if ($dosen['username'] == $username) {
-                return back()->withInput()->with("message", "Username harus unique!");
-            } else if ($dosen['email'] == $email) {
-                return back()->withInput()->with("message", "Email harus unique!");
-            } else if ($dosen['nomor'] == $nomor) {
-                return back()->withInput()->with("message", "Nomor telepon harus unique!");
-            }
-        }
-
-        Session::push('listDosen', [
-            "username" => $username,
-            "nama" => $nama,
-            "email" => $email,
-            "nomor" => $nomor,
-            "tanggal" => $tanggal,
-            "jurusan" => $jurusan,
-            "tahun" => $tahun,
-            "password" => $password,
+        //PUSH SESSION
+        Session::push('listUser', [
+            "username" => $request->username,
+            "nama" => $request->nama,
+            "email" => $request->email,
+            "nomor" => $request->nomor,
+            "tanggal" => $request->tanggal,
+            "jurusan" => $request->jurusan,
+            "tahun" => $request->tahun,
+            "password" => $request->password,
+            "role" => "dosen"
         ]);
+
         return back()->with("success", "Berhasil register!");
     }
 }
