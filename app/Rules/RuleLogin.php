@@ -29,7 +29,7 @@ class RuleLogin implements Rule
         if ($value == "admin") return true;
 
         foreach ($this->listUser as $user) {
-            if ($user == $value) {
+            if ($user['username'] == $value) {
                 return true;
             }
         }

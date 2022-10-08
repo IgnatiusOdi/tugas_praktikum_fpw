@@ -12,9 +12,11 @@ class RuleNomorTelepon implements Rule
      * @return void
      */
     public $listUser;
-    public function __construct($listUser = [])
+    public $index;
+    public function __construct($listUser = [], $index = -1)
     {
         $this->listUser = $listUser;
+        $this->index = $index;
     }
 
     /**
@@ -26,9 +28,11 @@ class RuleNomorTelepon implements Rule
      */
     public function passes($attribute, $value)
     {
-        foreach ($this->listUser as $user) {
-            if ($user['nomor'] == $value) {
-                return false;
+        foreach ($this->listUser as $key => $user) {
+            if ($this->index != $key) {
+                if ($user['nomor'] == $value) {
+                    return false;
+                }
             }
         }
 

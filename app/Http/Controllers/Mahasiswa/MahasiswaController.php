@@ -66,7 +66,7 @@ class MahasiswaController extends Controller
         $password = $words[count($words) - 1] . $year[count($year) - 2] . $year[count($year) - 1];
 
         //PUSH SESSION
-        Session::push('listMahasiswa', [
+        Session::push('listUser', [
             "username" => $nrp,
             "nama" => $request->nama,
             "email" => $request->email,

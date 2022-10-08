@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
+use App\Rules\RuleNomorTelepon;
+use App\Rules\RulePassword;
+use App\Rules\RuleUsername;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -16,68 +19,41 @@ class ProfileController extends Controller
     public function edit(Request $request)
     {
         $nama = $request->nama;
-        $username = $request->username;
-        $email = $request->email;
-        $nomor = $request->nomor;
-        $password = $request->password;
-        $confirmation = $request->confirmation;
-
-        $index = -1;
-        $listDosen = Session::get('listDosen');
-
-        //CEK FIELD KOSONG
-        if (empty($username) || empty($email) || empty($nomor) || empty($password) || empty($confirmation)) {
-            return back()->with("message", "Field tidak boleh kosong!");
-        }
-
-        //CEK USERNAME ADMIN
-        if ($username == "admin") {
-            return back()->with("message", "Username tidak boleh admin!");
-        }
-
-        //CEK PASSWORD DAN CONFIRMATION
-        if ($password != $confirmation) {
-            return back()->with("message", "Password dan Confirm Password harus sama!");
-        }
 
         //CARI INDEX DOSEN
-        foreach ($listDosen as $key => $dosen) {
-            if ($dosen['nama'] == $nama) {
-                $index = $key;
-                break;
-            }
-        }
-
-        //CEK EMAIL / NOMOR TELEPON KEMBAR
-        foreach (Session::get('listMahasiswa') as $mahasiswa) {
-            if ($mahasiswa['email'] == $email) {
-                return back()->with("message", "Email harus unique!");
-            } else if ($mahasiswa['nomor'] == $nomor) {
-                return back()->with("message", "Nomor telepon harus unique!");
-            }
-        }
-        //+CEK USERNAME KEMBAR TANPA INDEX
-        foreach ($listDosen as $key => $dosen) {
-            if ($key != $index) {
-                if ($dosen['username'] == $username) {
-                    return back()->with("message", "Username harus unique!");
-                } else if ($dosen['email'] == $email) {
-                    return back()->with("message", "Email harus unique!");
-                } else if ($dosen['nomor'] == $nomor) {
-                    return back()->with("message", "Nomor telepon harus unique!");
+        $index = -1;
+        $listUser = Session::get('listUser');
+        foreach ($listUser as $key => $user) {
+            if ($user['role'] == 'dosen') {
+                if ($user['nama'] == $nama) {
+                    $index = $key;
+                    break;
                 }
             }
         }
 
-        $dosen = $listDosen[$index];
-        $dosen["username"] = $username;
-        $dosen["email"] = $email;
-        $dosen["nomor"] = $nomor;
-        $dosen["password"] = $password;
-        $listDosen[$index] = $dosen;
+        $request->validate(
+            [
+                "username" => ["required", "alpha_dash", "min:5", "max:10", new RuleUsername(Session::get('listUser'), $index)],
+                "email" => "required | email",
+                "nomor" => ["required", "numeric", "digits_between:10,12", new RuleNomorTelepon(Session::get('listUser'), $index)],
+                "password" => ["required", "alpha_dash", "min:6", "max:12",  new RulePassword($request->username), "confirmed"],
+                "password_confirmation" => "required",
+            ]
+        );
 
-        Session::put('listDosen', $listDosen);
+        //REPLACE DOSEN
+        $dosen = $listUser[$index];
+        $dosen["username"] = $request->username;
+        $dosen["email"] = $request->email;
+        $dosen["nomor"] = $request->nomor;
+        $dosen["password"] = $request->password;
+        $listUser[$index] = $dosen;
+
+        //REPLACE SESSION
         Session::put('dosen', $dosen);
+        Session::put('listDosen', $listUser);
+
         return back()->with("success", "Berhasil edit profile!");
     }
 }

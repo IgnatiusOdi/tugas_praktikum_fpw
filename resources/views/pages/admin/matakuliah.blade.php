@@ -10,27 +10,41 @@
                 class="form-control bg-secondary px-16 py-6 w-full lg:w-1/2">
                 @csrf
                 <div class="text-2xl font-bold text-center mb-4">Tambah Mata Kuliah</div>
+
                 {{-- Nama --}}
                 <label class="label">
                     <span class="label-text">Nama</span>
                 </label>
-                <input type="text" name="nama" placeholder="Nama"
+                <input type="text" name="nama" value="{{ old('nama') }}" placeholder="Nama"
                     class="input input-bordered input-primary w-full bg-white" />
+                @error('nama')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
+
                 {{-- Jurusan --}}
                 <label class="label">
                     <span class="label-text">Jurusan</span>
                 </label>
-                <select name="jurusan" class="select select-primary w-full">
-                    <option value="INF" selected>S1-Informatika</option>
+                <select name="jurusan" value="{{ old('jurusan') }}" class="select select-primary w-full bg-white">
+                    <option value="INF">S1-Informatika</option>
                     <option value="SIB">S1-Sistem Informasi Bisnis</option>
                     <option value="DKV">S1-Desain Komunikasi Visual</option>
                 </select>
+                @error('jurusan')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
+
                 {{-- Semester --}}
                 <label class="label">
-                    <span class="label-text">Semester</span>
+                    <span class="label-text">Minimal Semester</span>
                 </label>
-                <input type="number" name="semester" placeholder="Minimum Semester" min="1" max="8"
+                <input type="number" name="semester" value="{{ old('semester') }}" placeholder="Minimal Semester"
                     class="input input-bordered input-primary w-full bg-white" />
+                @error('semester')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
+
+                {{-- Button Tambah --}}
                 <button class="btn bg-primary my-6">Tambah</button>
             </form>
         </div>
@@ -46,35 +60,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Session::has('listMataKuliah'))
-                        @forelse (Session::get('listMataKuliah') as $matkul)
-                            <tr>
-                                <th>{{ $matkul['kode'] }}</th>
-                                <td>{{ $matkul['nama'] }}</td>
-                                <td>
-                                    @if ($matkul['jurusan'] == 'INF')
-                                        S1-Informatika
-                                    @elseif ($matkul['jurusan'] == 'SIB')
-                                        S1-Sistem Informasi Bisnis
-                                    @elseif ($matkul['jurusan'] == 'DKV')
-                                        S1-Desain Komunikasi Visual
-                                    @endif
-                                </td>
-                                <td>{{ $matkul['semester'] }}</td>
-                                <td>
-                                    <form action="{{ route('admin-hapus-matakuliah') }}" method="POST">
-                                        @csrf
-                                        <button name="kode" value="{{ $matkul['kode'] }}"
-                                            class="btn btn-error w-2/3">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center font-bold">Tidak ada mata kuliah saat ini!</td>
-                            </tr>
-                        @endforelse
-                    @endif
+                    @forelse (Session::get('listMataKuliah') as $matkul)
+                        <tr>
+                            <th>{{ $matkul['kode'] }}</th>
+                            <td>{{ $matkul['nama'] }}</td>
+                            <td>
+                                @if ($matkul['jurusan'] == 'INF')
+                                    S1-Informatika
+                                @elseif ($matkul['jurusan'] == 'SIB')
+                                    S1-Sistem Informasi Bisnis
+                                @elseif ($matkul['jurusan'] == 'DKV')
+                                    S1-Desain Komunikasi Visual
+                                @endif
+                            </td>
+                            <td>{{ $matkul['semester'] }}</td>
+                            <td>
+                                <form action="{{ route('admin-hapus-matakuliah') }}" method="POST">
+                                    @csrf
+                                    <button name="kode" value="{{ $matkul['kode'] }}"
+                                        class="btn btn-error w-2/3">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center font-bold">Tidak ada mata kuliah saat ini!</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

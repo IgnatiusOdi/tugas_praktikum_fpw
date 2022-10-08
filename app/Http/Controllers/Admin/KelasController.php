@@ -16,6 +16,10 @@ class KelasController extends Controller
 
     public function tambah(Request $request)
     {
+        dd($request);
+        $request->validate(
+            []
+        );
         $matakuliah = explode('-', $request->matakuliah);
         $hari = $request->hari;
         $jam = $request->jam;

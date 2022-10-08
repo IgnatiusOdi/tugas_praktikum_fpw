@@ -14,7 +14,7 @@
                     <label class="label">
                         <span class="label-text">Username</span>
                     </label>
-                    <input type="text" name="username" placeholder="Username"
+                    <input type="text" name="username" value="{{ old('username') }}" placeholder="Username"
                         class="input input-bordered input-primary w-full bg-white" />
                     @error('username')
                         <span class="text-red-500">{{ $message }}</span>

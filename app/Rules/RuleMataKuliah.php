@@ -4,19 +4,17 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class RuleUsername implements Rule
+class RuleMataKuliah implements Rule
 {
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public $listUser;
-    public $index;
-    public function __construct($listUser = [], $index = -1)
+    public $listMataKuliah;
+    public function __construct($listMataKuliah = [])
     {
-        $this->listUser = $listUser;
-        $this->index = $index;
+        $this->listMataKuliah = $listMataKuliah;
     }
 
     /**
@@ -28,13 +26,9 @@ class RuleUsername implements Rule
      */
     public function passes($attribute, $value)
     {
-        foreach ($this->listUser as $key => $user) {
-            if ($user['role'] == 'dosen') {
-                if ($this->index != $key) {
-                    if ($user['username'] == $value) {
-                        return false;
-                    }
-                }
+        foreach ($this->listMataKuliah as $matkul) {
+            if ($matkul['nama'] == $value) {
+                return false;
             }
         }
 
@@ -48,6 +42,6 @@ class RuleUsername implements Rule
      */
     public function message()
     {
-        return 'Username harus unik!';
+        return 'Nama mata kuliah harus unik!';
     }
 }

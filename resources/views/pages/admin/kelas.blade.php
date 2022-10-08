@@ -10,41 +10,46 @@
                 class="form-control bg-secondary px-16 py-6 w-full lg:w-1/2">
                 @csrf
                 <div class="text-2xl font-bold text-center mb-4">Tambah Kelas</div>
+
                 {{-- Mata Kuliah --}}
                 <label class="label">
                     <span class="label-text">Mata Kuliah</span>
                 </label>
-                <select name="matakuliah" class="select select-primary w-full">
+                <select name="matakuliah" class="select select-primary w-full bg-white">
                     @foreach (Session::get('listMataKuliah') as $matkul)
                         <option value="{{ $matkul['nama'] . '-' . $matkul['jurusan'] }}">{{ $matkul['nama'] }}</option>
                     @endforeach
                 </select>
+
                 {{-- Hari --}}
                 <label class="label">
                     <span class="label-text">Hari</span>
                 </label>
-                <select name="hari" class="select select-primary w-full">
+                <select name="hari" class="select select-primary w-full bg-white">
                     <option value="Senin" selected>Senin</option>
                     <option value="Selasa">Selasa</option>
                     <option value="Rabu">Rabu</option>
                     <option value="Kamis">Kamis</option>
                     <option value="Jumat">Jumat</option>
                 </select>
+
+                {{-- Jam --}}
                 <label class="label">
                     <span class="label-text">Jam</span>
                 </label>
-                <select name="jam" class="select select-primary w-full">
+                <select name="jam" class="select select-primary w-full bg-white">
                     <option value="08:00 - 10:30" selected>08:00 - 10:30</option>
                     <option value="10:30 - 13:00">10:30 - 13:00</option>
                     <option value="13:00 - 15.30">13:00 - 15.30</option>
                     <option value="15:30 - 18:00">15:30 - 18:00</option>
                     <option value="18:00 - 20:30">18:00 - 20:30</option>
                 </select>
+
                 {{-- Periode --}}
                 <label class="label">
                     <span class="label-text">Periode</span>
                 </label>
-                <select name="periode" class="select select-primary w-full">
+                <select name="periode" class="select select-primary w-full bg-white">
                     @foreach (Session::get('listPeriode') as $periode)
                         <option value="{{ $periode['tahun'] }}">
                             @php
@@ -55,15 +60,20 @@
                         </option>
                     @endforeach
                 </select>
+
                 {{-- Dosen Pengajar --}}
                 <label class="label">
                     <span class="label-text">Dosen Pengajar</span>
                 </label>
-                <select name="dosen" class="select select-primary w-full">
-                    @foreach (Session::get('listDosen') as $dosen)
-                        <option value="{{ $dosen['nama'] . '-' . $dosen['jurusan'] }}">{{ $dosen['nama'] }}</option>
+                <select name="dosen" class="select select-primary w-full bg-white">
+                    @foreach (Session::get('listUser') as $dosen)
+                        @if ($dosen['role'] == 'dosen')
+                            <option value="{{ $dosen['nama'] . '-' . $dosen['jurusan'] }}">{{ $dosen['nama'] }}</option>
+                        @endif
                     @endforeach
                 </select>
+
+                {{-- Button Tambah --}}
                 <button class="btn bg-primary my-6">Tambah</button>
             </form>
         </div>

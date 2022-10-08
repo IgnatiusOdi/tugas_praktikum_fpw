@@ -7,7 +7,7 @@
         <div class="font-bold text-5xl p-10">Welcome, Admin!</div>
         <div class="font-bold text-3xl p-10">Progress saat ini :</div>
         <div class="radial-progress text-primary border-4 border-primary mx-10"
-            style="--value:28.5; --size:14rem; --thickness: 1rem;">28.5%</div>
+            style="--value:42.86; --size:14rem; --thickness: 1rem;">42.86%</div>
         {{-- <div class="font-bold text-2xl p-10 bg-primary-focus text-secondary">List Mata Kuliah</div>
         <div class="text-xl p-4">Total mata kuliah yang ada: {{ count(Session::get('listMataKuliah')) }} mata kuliah</div>
         <div class="grid grid-cols-4 gap-4 p-4">
