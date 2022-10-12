@@ -20,6 +20,19 @@
                         <option value="{{ $matkul['nama'] . '-' . $matkul['jurusan'] }}">{{ $matkul['nama'] }}</option>
                     @endforeach
                 </select>
+                @error('matakuliah')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
+
+                {{-- SKS --}}
+                <label class="label">
+                    <span class="label-text">SKS</span>
+                </label>
+                <input type="number" name="sks" value="{{ old('sks') }}" placeholder="SKS"
+                    class="input input-bordered input-primary w-full bg-white" />
+                @error('sks')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
 
                 {{-- Hari --}}
                 <label class="label">
@@ -32,18 +45,19 @@
                     <option value="Kamis">Kamis</option>
                     <option value="Jumat">Jumat</option>
                 </select>
+                @error('hari')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
 
                 {{-- Jam --}}
                 <label class="label">
                     <span class="label-text">Jam</span>
                 </label>
-                <select name="jam" class="select select-primary w-full bg-white">
-                    <option value="08:00 - 10:30" selected>08:00 - 10:30</option>
-                    <option value="10:30 - 13:00">10:30 - 13:00</option>
-                    <option value="13:00 - 15.30">13:00 - 15.30</option>
-                    <option value="15:30 - 18:00">15:30 - 18:00</option>
-                    <option value="18:00 - 20:30">18:00 - 20:30</option>
-                </select>
+                <input type="time" name="jam" value="{{ old('jam') }}"
+                    class="input input-bordered input-primary w-full bg-white" />
+                @error('jam')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
 
                 {{-- Periode --}}
                 <label class="label">
@@ -60,6 +74,9 @@
                         </option>
                     @endforeach
                 </select>
+                @error('periode')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
 
                 {{-- Dosen Pengajar --}}
                 <label class="label">
@@ -72,6 +89,9 @@
                         @endif
                     @endforeach
                 </select>
+                @error('dosen')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
 
                 {{-- Button Tambah --}}
                 <button class="btn bg-primary my-6">Tambah</button>
@@ -82,6 +102,7 @@
                 <thead>
                     <tr>
                         <th>Mata Kuliah</th>
+                        <th>SKS</th>
                         <th>Hari</th>
                         <th>Jam</th>
                         <th>Periode</th>
@@ -93,6 +114,7 @@
                     @forelse (Session::get('listKelas') as $kelas)
                         <tr>
                             <th>{{ $kelas['matakuliah'] }}</th>
+                            <td>{{ $kelas['sks'] }}</td>
                             <td>{{ $kelas['hari'] }}</td>
                             <td>{{ $kelas['jam'] }}</td>
                             <td>

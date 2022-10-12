@@ -16,32 +16,37 @@ class KelasController extends Controller
 
     public function tambah(Request $request)
     {
-        dd($request);
         $request->validate(
-            []
+            [
+                "matakuliah" => "required",
+                "sks" => "required | integer | gte:2",
+                "hari" => "required",
+                "jam" => "required",
+                "periode" => "required",
+                "dosen" => "required",
+            ],
+            [
+                "required" => "Field harus diisi!",
+                "gte" => "Minimal SKS adalah 2"
+            ]
         );
-        $matakuliah = explode('-', $request->matakuliah);
-        $hari = $request->hari;
-        $jam = $request->jam;
-        $periode = $request->periode;
-        $dosen = explode('-', $request->dosen);
 
-        //CEK FIELD KOSONG
-        if (empty($matakuliah) || empty($periode) || empty($dosen)) {
-            return back()->with("message", "Field tidak boleh kosong!");
-        }
+        $matakuliah = explode('-', $request->matakuliah);
+        $dosen = explode('-', $request->dosen);
 
         $namaMatkul = $matakuliah[0];
         $jurusanMatkul = $matakuliah[1];
         $namaDosen = $dosen[0];
         $jurusanDosen = $dosen[1];
 
-        //CEK DOSEN JURUSAN SAMA
-        if ($jurusanMatkul != $jurusanDosen) {
-            return back()->with("message", "Jurusan Dosen dan Jurusan Mata Kuliah harus sama!");
-        }
-
-        Session::push("listKelas", ["matakuliah" => $namaMatkul, "hari" => $hari, "jam" => $jam, "periode" => $periode, "dosen" => $namaDosen]);
+        Session::push("listKelas", [
+            "matakuliah" => $namaMatkul,
+            "sks" => $request->sks,
+            "hari" => $request->hari,
+            "jam" => $request->jam,
+            "periode" => $request->periode,
+            "dosen" => $namaDosen,
+        ]);
         return back()->with("success", "Berhasil menambahkan kelas!");
     }
 
