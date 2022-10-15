@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Rules\RuleNamaLengkap;
+use App\Rules\RuleNamaLengkapVowel;
 use App\Rules\RuleNomorTelepon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Symfony\Component\Console\Input\Input;
 
 class MahasiswaController extends Controller
 {
@@ -26,7 +27,7 @@ class MahasiswaController extends Controller
     {
         $request->validate(
             [
-                "nama" => "required",
+                "nama" => ["required", new RuleNamaLengkap(), new RuleNamaLengkapVowel()],
                 "email" => "required | email",
                 "nomor" => ["required", "numeric", "digits_between:10,12", new RuleNomorTelepon(Session::get('listUser'))],
                 "tanggal" => "required | date | before:-18 years",
