@@ -8,7 +8,7 @@
                 </svg>
             </label>
             <ul tabindex="0" class="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                <li><a href=@yield('kelas')>Kelas</a></li>
+                <li><a href=@yield('kelas')>My Kelas</a></li>
                 <li><a href=@yield('profile')>Profile</a></li>
             </ul>
         </div>

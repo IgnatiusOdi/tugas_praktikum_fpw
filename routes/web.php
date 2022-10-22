@@ -95,6 +95,7 @@ Route::prefix('mahasiswa')->group(function () {
     //HOME
     Route::get('/', [MahasiswaHomeController::class, "view"])->name("mahasiswa");
     Route::post('/', [MahasiswaController::class, "logout"])->name("mahasiswa-logout");
+    Route::post('join', [MahasiswaHomeController::class, 'join'])->name("mahasiswa-join-kelas");
     //KELAS
     Route::get('kelas/{kode_periode?}', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
     //PROFILE

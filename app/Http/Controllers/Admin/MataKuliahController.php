@@ -92,10 +92,10 @@ class MataKuliahController extends Controller
                     return back();
                 }
             }
-        } else if (isset($request->hapus)) {
+        } else if (isset($request->delete)) {
             $listMataKuliah = Session::get('listMataKuliah');
             foreach ($listMataKuliah as $key => $matkul) {
-                if ($matkul['kode'] == $request->hapus) {
+                if ($matkul['kode'] == $request->delete) {
                     unset($listMataKuliah[$key]);
                     Session::put('listMataKuliah', $listMataKuliah);
                     return back()->with("success", "Berhasil menghapus mata kuliah!");

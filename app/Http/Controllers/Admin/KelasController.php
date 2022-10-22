@@ -43,6 +43,7 @@ class KelasController extends Controller
             Session::push("listKelas", [
                 "id" => $id,
                 "matakuliah" => $namaMatkul,
+                "jurusan" => $jurusanMatkul,
                 "hari" => $request->hari,
                 "jam" => $request->jam,
                 "periode" => $request->periode,
@@ -58,7 +59,6 @@ class KelasController extends Controller
                     "hari" => "required",
                     "jam" => "required",
                     "periode" => "required",
-                    "dosen" => "required",
                 ],
                 [
                     "required" => "Field harus diisi!",
@@ -70,8 +70,6 @@ class KelasController extends Controller
 
             $namaMatkul = $matakuliah[0];
             $jurusanMatkul = $matakuliah[1];
-            $namaDosen = $dosen[0];
-            $jurusanDosen = $dosen[1];
 
             $listKelas = Session::get('listKelas');
             foreach ($listKelas as $key => $kelas) {
@@ -100,12 +98,12 @@ class KelasController extends Controller
                     return back();
                 }
             }
-        } else if (isset($request->hapus)) {
+        } else if (isset($request->delete)) {
             $listKelas = Session::get('listKelas');
             foreach ($listKelas as $key => $kelas) {
-                if ($kelas['kode'] == $request->hapus) {
+                if ($kelas['id'] == $request->delete) {
                     unset($listKelas[$key]);
-                    Session::put('listMataKuliah', $listKelas);
+                    Session::put('listKelas', $listKelas);
                     return back()->with("success", "Berhasil menghapus kelas!");
                 }
             }

@@ -99,7 +99,7 @@
                 <label class="label">
                     <span class="label-text">Dosen Pengajar</span>
                 </label>
-                <select name="dosen" class="select select-primary w-full bg-white">
+                <select name="dosen" class="select select-primary w-full bg-white" {{ Session::has('editKelas') ? 'disabled' : '' }}>
                     @foreach (Session::get('listUser') as $dosen)
                         @if ($dosen['role'] == 'dosen')
                             @if (Session::has('editKelas') && Session::get('editKelas')['dosen'] == $dosen['nama'])
@@ -153,7 +153,7 @@
                                     @csrf
                                     <button name="edit" value="{{ $kelas['id'] }}"
                                         class="btn btn-info w-1/3">Edit</button>
-                                    <button name="matakuliah" value="{{ $kelas['id'] }}"
+                                    <button name="delete" value="{{ $kelas['id'] }}"
                                         class="btn btn-error w-1/3">Delete</button>
                                 </form>
                             </td>
