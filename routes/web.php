@@ -55,11 +55,12 @@ Route::prefix('register')->group(function () {
 Route::prefix('admin')->group(function () {
     //DASHBOARD
     Route::get('/', [AdminController::class, 'view'])->name('admin');
+    Route::post('/', [AdminController::class, 'logout'])->name('admin-logout');
     //MATA KULIAH
     Route::prefix('matakuliah')->group(function () {
         Route::get('/', [MataKuliahController::class, 'view'])->name('admin-matakuliah');
         Route::post('tambah', [MataKuliahController::class, 'tambah'])->name('admin-tambah-matakuliah');
-        Route::post('hapus', [MataKuliahController::class, 'hapus'])->name('admin-hapus-matakuliah');
+        Route::post('action', [MataKuliahController::class, 'action'])->name('admin-action-matakuliah');
     });
     //PERIODE
     Route::prefix('periode')->group(function () {
@@ -71,7 +72,7 @@ Route::prefix('admin')->group(function () {
     Route::prefix('kelas')->group(function () {
         Route::get('/', [AdminKelasController::class, 'view'])->name('admin-kelas');
         Route::post('tambah', [AdminKelasController::class, 'tambah'])->name('admin-tambah-kelas');
-        Route::post('hapus', [AdminKelasController::class, 'hapus'])->name('admin-hapus-kelas');
+        Route::post('action', [AdminKelasController::class, 'action'])->name('admin-action-kelas');
     });
     // Route::get('dosen', [AdminDosenController::class, 'dosen'])->name('admin-dosen');
     // Route::get('mahasiswa', [AdminMahasiswaController::class, 'mahasiswa'])->name('admin-mahasiswa');
@@ -93,6 +94,7 @@ Route::prefix('dosen')->group(function () {
 Route::prefix('mahasiswa')->group(function () {
     //HOME
     Route::get('/', [MahasiswaHomeController::class, "view"])->name("mahasiswa");
+    Route::post('/', [MahasiswaController::class, "logout"])->name("mahasiswa-logout");
     //KELAS
     Route::get('kelas/{kode_periode?}', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
     //PROFILE

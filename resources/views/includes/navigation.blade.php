@@ -17,7 +17,9 @@
         <a class="btn btn-ghost normal-case text-xl" href=@yield('home')>iH - class</a>
     </div>
     <div class="navbar-end">
-        <form action="{{ route('dosen-logout') }}" method="POST">
+        <form
+            action="@if (request()->is('mahasiswa') || request()->is('mahasiswa/*')) {{ route('mahasiswa-logout') }} @else {{ route('dosen-logout') }} @endif"
+            method="POST">
             @csrf
             <button class="btn btn-outline @if (request()->is('mahasiswa') || request()->is('mahasiswa/*')) btn-info @else btn-error @endif">
                 Logout

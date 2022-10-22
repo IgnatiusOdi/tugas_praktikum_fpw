@@ -46,11 +46,12 @@
             @endif
         </li> --}}
         <div class="w-full mt-8 text-center">
-            <a href="{{ route('login') }}">
+            <form action="{{ route('admin-logout') }}" method="POST">
+                @csrf
                 <button class="btn btn-outline btn-error">
                     Logout
                 </button>
-            </a>
+            </form>
         </div>
     </ul>
 </div>

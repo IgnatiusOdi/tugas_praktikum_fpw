@@ -9,7 +9,11 @@
             <form action="{{ route('admin-tambah-kelas') }}" method="POST"
                 class="form-control bg-secondary px-16 py-6 w-full lg:w-1/2">
                 @csrf
-                <div class="text-2xl font-bold text-center mb-4">Tambah Kelas</div>
+                @php
+                    $tipe = Session::has('editKelas') ? 'Edit' : 'Tambah';
+                @endphp
+
+                <div class="text-2xl font-bold text-center mb-4">{{ $tipe }} Kelas</div>
 
                 {{-- Mata Kuliah --}}
                 <label class="label">
@@ -17,20 +21,18 @@
                 </label>
                 <select name="matakuliah" class="select select-primary w-full bg-white">
                     @foreach (Session::get('listMataKuliah') as $matkul)
-                        <option value="{{ $matkul['nama'] . '-' . $matkul['jurusan'] }}">{{ $matkul['nama'] }}</option>
+                        @if (Session::has('editKelas') && Session::get('editKelas')['matakuliah'] == $matkul['nama'])
+                            <option value="{{ $matkul['nama'] . '-' . $matkul['jurusan'] }}" selected>
+                                {{ $matkul['nama'] }}
+                            </option>
+                        @else
+                            <option value="{{ $matkul['nama'] . '-' . $matkul['jurusan'] }}">
+                                {{ $matkul['nama'] }}
+                            </option>
+                        @endif
                     @endforeach
                 </select>
                 @error('matakuliah')
-                    <span class="text-red-500">{{ $message }}</span>
-                @enderror
-
-                {{-- SKS --}}
-                <label class="label">
-                    <span class="label-text">SKS</span>
-                </label>
-                <input type="number" name="sks" value="{{ old('sks') }}" placeholder="SKS"
-                    class="input input-bordered input-primary w-full bg-white" />
-                @error('sks')
                     <span class="text-red-500">{{ $message }}</span>
                 @enderror
 
@@ -39,11 +41,16 @@
                     <span class="label-text">Hari</span>
                 </label>
                 <select name="hari" class="select select-primary w-full bg-white">
-                    <option value="Senin" selected>Senin</option>
-                    <option value="Selasa">Selasa</option>
-                    <option value="Rabu">Rabu</option>
-                    <option value="Kamis">Kamis</option>
-                    <option value="Jumat">Jumat</option>
+                    @php
+                        $listHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+                    @endphp
+                    @foreach ($listHari as $hari)
+                        @if (Session::has('editKelas') && Session::get('editKelas')['hari'] == $hari)
+                            <option value="{{ $hari }}" selected>{{ $hari }}</option>
+                        @else
+                            <option value="{{ $hari }}">{{ $hari }}</option>
+                        @endif
+                    @endforeach
                 </select>
                 @error('hari')
                     <span class="text-red-500">{{ $message }}</span>
@@ -53,7 +60,7 @@
                 <label class="label">
                     <span class="label-text">Jam</span>
                 </label>
-                <input type="time" name="jam" value="{{ old('jam') }}"
+                <input type="time" name="jam" value="{{ old('jam', Session::get('editKelas')['jam'] ?? '') }}"
                     class="input input-bordered input-primary w-full bg-white" />
                 @error('jam')
                     <span class="text-red-500">{{ $message }}</span>
@@ -65,13 +72,23 @@
                 </label>
                 <select name="periode" class="select select-primary w-full bg-white">
                     @foreach (Session::get('listPeriode') as $periode)
-                        <option value="{{ $periode['tahun'] }}">
-                            @php
-                                $p = explode('-', $periode['tahun']);
-                                $p = $p[0] . '/' . $p[1];
-                            @endphp
-                            {{ $p }}
-                        </option>
+                        @if (Session::has('editKelas') && Session::get('editKelas')['periode'] == $periode)
+                            <option value="{{ $periode['tahun'] }}" selected>
+                                @php
+                                    $p = explode('-', $periode['tahun']);
+                                    $p = $p[0] . '/' . $p[1];
+                                @endphp
+                                {{ $p }}
+                            </option>
+                        @else
+                            <option value="{{ $periode['tahun'] }}">
+                                @php
+                                    $p = explode('-', $periode['tahun']);
+                                    $p = $p[0] . '/' . $p[1];
+                                @endphp
+                                {{ $p }}
+                            </option>
+                        @endif
                     @endforeach
                 </select>
                 @error('periode')
@@ -85,7 +102,13 @@
                 <select name="dosen" class="select select-primary w-full bg-white">
                     @foreach (Session::get('listUser') as $dosen)
                         @if ($dosen['role'] == 'dosen')
-                            <option value="{{ $dosen['nama'] . '-' . $dosen['jurusan'] }}">{{ $dosen['nama'] }}</option>
+                            @if (Session::has('editKelas') && Session::get('editKelas')['dosen'] == $dosen['nama'])
+                                <option value="{{ $dosen['nama'] . '-' . $dosen['jurusan'] }}" selected>
+                                    {{ $dosen['nama'] }}</option>
+                            @else
+                                <option value="{{ $dosen['nama'] . '-' . $dosen['jurusan'] }}">{{ $dosen['nama'] }}
+                                </option>
+                            @endif
                         @endif
                     @endforeach
                 </select>
@@ -93,8 +116,10 @@
                     <span class="text-red-500">{{ $message }}</span>
                 @enderror
 
-                {{-- Button Tambah --}}
-                <button class="btn bg-primary my-6">Tambah</button>
+                {{-- Button Edit / Tambah --}}
+                <button class="btn bg-primary my-6" name="button"
+                    value="{{ $tipe }}">{{ $tipe }}</button>
+                <input type="hidden" name="id" value="{{ Session::get('editKelas')['id'] ?? '' }}">
             </form>
         </div>
         <div class="overflow-x-auto px-8">
@@ -102,7 +127,6 @@
                 <thead>
                     <tr>
                         <th>Mata Kuliah</th>
-                        <th>SKS</th>
                         <th>Hari</th>
                         <th>Jam</th>
                         <th>Periode</th>
@@ -114,7 +138,6 @@
                     @forelse (Session::get('listKelas') as $kelas)
                         <tr>
                             <th>{{ $kelas['matakuliah'] }}</th>
-                            <td>{{ $kelas['sks'] }}</td>
                             <td>{{ $kelas['hari'] }}</td>
                             <td>{{ $kelas['jam'] }}</td>
                             <td>
@@ -126,10 +149,12 @@
                             </td>
                             <td>{{ $kelas['dosen'] }}</td>
                             <td>
-                                <form action="{{ route('admin-hapus-kelas') }}" method="POST">
+                                <form action="{{ route('admin-action-kelas') }}" method="POST">
                                     @csrf
-                                    <button name="matakuliah" value="{{ $kelas['matakuliah'] }}"
-                                        class="btn btn-error w-full">Delete</button>
+                                    <button name="edit" value="{{ $kelas['id'] }}"
+                                        class="btn btn-info w-1/3">Edit</button>
+                                    <button name="matakuliah" value="{{ $kelas['id'] }}"
+                                        class="btn btn-error w-1/3">Delete</button>
                                 </form>
                             </td>
                         </tr>

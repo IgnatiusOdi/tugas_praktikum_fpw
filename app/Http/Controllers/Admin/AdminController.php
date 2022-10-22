@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
+    public function logout()
+    {
+        Session::forget('admin');
+        return redirect()->intended("login")->with("success", "Berhasil logout!");
+    }
+
     public function view()
     {
         if (Session::has('admin')) {
