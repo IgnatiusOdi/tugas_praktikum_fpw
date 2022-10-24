@@ -39,7 +39,7 @@
                             <td>
                                 <form action="{{ route('mahasiswa-join-kelas') }}" method="POST">
                                     @csrf
-                                    <button name="join" value="{{ $kelas['id'] }}" class="btn btn-info w-1/3">Join</button>
+                                    <button name="join" value="{{ $kelas['id'] }}" class="btn btn-info w-2/3">Join</button>
                                 </form>
                             </td>
                         </tr>

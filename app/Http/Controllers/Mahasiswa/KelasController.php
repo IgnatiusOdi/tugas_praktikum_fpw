@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class KelasController extends Controller
 {
@@ -17,5 +18,16 @@ class KelasController extends Controller
         }
 
         return view("pages.mahasiswa.kelas", compact("url", "periode"));
+    }
+
+    public function detail(Request $request)
+    {
+        foreach (Session::get('listKelas') as $kelas) {
+            if ($kelas['id'] == $request->detail) {
+                $detail = $kelas;
+                return view("pages.mahasiswa.detail", compact("detail"));
+            }
+        }
+        return back()->with("message", "Gagal membuka detail kelas!");
     }
 }

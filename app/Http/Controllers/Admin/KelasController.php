@@ -49,6 +49,7 @@ class KelasController extends Controller
                 "periode" => $request->periode,
                 "dosen" => $namaDosen,
                 "mahasiswa" => [],
+                "absensi" => [],
             ]);
 
             return back()->with("success", "Berhasil menambahkan kelas!");

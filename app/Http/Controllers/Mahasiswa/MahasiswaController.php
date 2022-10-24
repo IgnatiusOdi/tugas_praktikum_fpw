@@ -50,7 +50,7 @@ class MahasiswaController extends Controller
         $id = 1;
         foreach (Session::get('listUser') as $user) {
             if ($user['role'] == 'mahasiswa') {
-                if (substr($user["nrp"], 0, 3) == $nrp) {
+                if (substr($user["username"], 0, 3) == $nrp) {
                     $id += 1;
                 }
             }

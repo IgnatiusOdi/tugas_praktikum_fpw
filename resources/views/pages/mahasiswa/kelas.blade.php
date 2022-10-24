@@ -8,7 +8,7 @@
 @section('content')
     <div class="flex flex-col items-center">
         <div class="font-bold text-3xl p-8">List Kelas</div>
-        @if ($periode != '')
+        {{-- @if ($periode != '')
             <div class="font-bold text-3xl mb-8">{{ $periode }}</div>
         @endif
         <div class="dropdown dropdown-hover">
@@ -18,52 +18,58 @@
                     <li><a href="{{ '/mahasiswa/kelas/' . $goToPeriode['tahun'] }}">{{ $goToPeriode['tahun'] }}</a></li>
                 @endforeach
             </ul>
-        </div>
-        <div class="overflow-x-auto px-8 py-4 w-full">
-            <table class="table table-compact table-zebra w-full text-center">
-                <thead>
-                    <tr>
-                        <th>Mata Kuliah</th>
-                        <th>Hari</th>
-                        <th>Jam</th>
-                        <th>Periode</th>
-                        <th>Dosen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse (Session::get('listKelas') as $kelas)
-                        @if ($periode == '')
-                            {{-- GET AKTIF --}}
-                            @foreach (Session::get('periodeAktif') as $aktif)
-                                @if ($kelas['periode'] == $aktif)
-                                    <tr>
-                                        <th>{{ $kelas['matakuliah'] }}</th>
-                                        <td>{{ $kelas['hari'] }}</td>
-                                        <td>{{ $kelas['jam'] }}</td>
-                                        <td>{{ $kelas['periode'] }}</td>
-                                        <td>{{ $kelas['dosen'] }}</td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        @else
-                            {{-- GET PERIODE SAMA --}}
-                            @if ($kelas['periode'] == $url)
-                                <tr>
-                                    <th>{{ $kelas['matakuliah'] }}</th>
-                                    <td>{{ $kelas['hari'] }}</td>
-                                    <td>{{ $kelas['jam'] }}</td>
-                                    <td>{{ $kelas['periode'] }}</td>
-                                    <td>{{ $kelas['dosen'] }}</td>
-                                </tr>
-                            @endif
+        </div> --}}
+    </div>
+    <div class="overflow-x-auto px-8">
+        <table class="table table-compact table-zebra w-full text-center">
+            <thead>
+                <tr>
+                    <th>Mata Kuliah</th>
+                    <th>Hari</th>
+                    <th>Jam</th>
+                    <th>Periode</th>
+                    <th>Dosen</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $foundKelas = false;
+                @endphp
+                @foreach (Session::get('listKelas') as $kelas)
+                    @foreach ($kelas['mahasiswa'] as $isiKelas)
+                        @if ($isiKelas == Session::get('mahasiswa')['username'])
+                            @php
+                                $foundKelas = true;
+                            @endphp
+                            <tr>
+                                <th>{{ $kelas['matakuliah'] }}</th>
+                                <td>{{ $kelas['hari'] }}</td>
+                                <td>{{ $kelas['jam'] }}</td>
+                                <td>
+                                    @php
+                                        $p = explode('-', $kelas['periode']);
+                                        $p = $p[0] . '/' . $p[1];
+                                    @endphp
+                                    {{ $p }}
+                                </td>
+                                <td>{{ $kelas['dosen'] }}</td>
+                                <td>
+                                    <form action="{{ route('mahasiswa-kelas-detail', $kelas['id']) }}" method="GET">
+                                        <button name="detail" value="{{ $kelas['id'] }}"
+                                            class="btn btn-info w-2/3">Detail</button>
+                                    </form>
+                                </td>
+                            </tr>
                         @endif
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center font-bold">Tidak ada kelas saat ini!</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                    @endforeach
+                @endforeach
+                @if (!$foundKelas)
+                    <tr>
+                        <td colspan="6" class="text-center font-bold">Tidak ada kelas yang diambil!</td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
     </div>
 @endsection

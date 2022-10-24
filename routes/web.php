@@ -23,17 +23,6 @@ use App\Http\Controllers\Mahasiswa\ProfileController as MahasiswaProfileControll
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 //REDIRECT
 Route::get('/', function () {
     return redirect()->route('login');
@@ -84,7 +73,11 @@ Route::prefix('dosen')->group(function () {
     Route::get('/', [DosenHomeController::class, "view"])->name("dosen");
     Route::post('/', [DosenController::class, "logout"])->name("dosen-logout");
     //KELAS
-    Route::get('kelas/{kode_periode?}', [DosenKelasController::class, 'view'])->name("dosen-kelas");
+    // Route::get('kelas/{kode_periode?}', [DosenKelasController::class, 'view'])->name("dosen-kelas");
+    Route::get('kelas', [DosenKelasController::class, 'view'])->name("dosen-kelas");
+    Route::get('kelas/{id}', [DosenKelasController::class, 'detail'])->name('dosen-kelas-detail');
+    Route::get('kelas/{id}/absensi', [DosenKelasController::class, 'absensi'])->name('dosen-kelas-absensi');
+    Route::post('kelas/{id}/absensi', [DosenKelasController::class, 'create'])->name('dosen-kelas-create-absensi');
     //PROFILE
     Route::get('profile', [DosenProfileController::class, "view"])->name("dosen-profile");
     Route::post('profile', [DosenProfileController::class, "edit"])->name("dosen-edit-profile");
@@ -97,8 +90,13 @@ Route::prefix('mahasiswa')->group(function () {
     Route::post('/', [MahasiswaController::class, "logout"])->name("mahasiswa-logout");
     Route::post('join', [MahasiswaHomeController::class, 'join'])->name("mahasiswa-join-kelas");
     //KELAS
-    Route::get('kelas/{kode_periode?}', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
+    // Route::get('kelas/{kode_periode?}', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
+    Route::get('kelas', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
+    Route::get('kelas/{id}', [MahasiswaKelasController::class, "detail"])->name('mahasiswa-kelas-detail');
     //PROFILE
     Route::get('profile', [MahasiswaProfileController::class, "view"])->name("mahasiswa-profile");
     Route::post('profile', [MahasiswaProfileController::class, "edit"])->name("mahasiswa-edit-profile");
 });
+
+//DUMMY
+Route::get('dummy', [UserController::class, "dummy"]);
