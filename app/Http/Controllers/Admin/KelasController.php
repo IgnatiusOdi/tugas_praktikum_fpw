@@ -4,18 +4,37 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class KelasController extends Controller
 {
     public function view()
     {
-        // Session::put('listKelas', []);
-        return view("pages.admin.kelas");
+        $listMatakuliah = DB::table('matakuliah')->get();
+        $listHari = DB::table('hari')->get();
+        $listJam = DB::table('jam')->get();
+        $listPeriode = DB::table('periode')->get();
+        $listDosen = DB::table('dosen')->get();
+        $listKelas = DB::table('kelas')
+            ->join('matakuliah', 'matakuliah.id', 'kelas.matakuliah_id')
+            ->join('hari', 'hari.id', 'kelas.hari_id')
+            ->join('jam', 'jam.id', 'kelas.jam_id')
+            ->join('periode', 'periode.id', 'kelas.periode_id')
+            ->join('dosen', 'dosen.id', 'kelas.dosen_id')
+            ->get(["kelas.id", "matakuliah_nama", "hari_nama", "jam_nama", "periode_tahun", "dosen_nama"]);
+        return view("pages.admin.kelas", compact("listMatakuliah", "listHari", "listJam", "listPeriode", "listDosen", "listKelas"));
     }
 
     public function tambah(Request $request)
     {
+        $matakuliah = $request->matakuliah;
+        $hari = $request->hari;
+        $jam = $request->jam;
+        $periode = $request->periode;
+        $dosen = $request->dosen;
+        $id = $request->id;
+
         if ($request->button == "Tambah") {
             $request->validate(
                 [
@@ -30,29 +49,20 @@ class KelasController extends Controller
                 ]
             );
 
-            $matakuliah = explode('-', $request->matakuliah);
-            $dosen = explode('-', $request->dosen);
-
-            $namaMatkul = $matakuliah[0];
-            $jurusanMatkul = $matakuliah[1];
-            $namaDosen = $dosen[0];
-            $jurusanDosen = $dosen[1];
-
-            $id = count(Session::get('listKelas')) + 1;
-
-            Session::push("listKelas", [
-                "id" => $id,
-                "matakuliah" => $namaMatkul,
-                "jurusan" => $jurusanMatkul,
-                "hari" => $request->hari,
-                "jam" => $request->jam,
-                "periode" => $request->periode,
-                "dosen" => $namaDosen,
-                "mahasiswa" => [],
-                "absensi" => [],
+            //INSERT KELAS
+            $result = DB::table('kelas')->insert([
+                "matakuliah_id" => $matakuliah,
+                "hari_id" => $hari,
+                "jam_id" => $jam,
+                "periode_id" => $periode,
+                "dosen_id" => $dosen,
             ]);
 
-            return back()->with("success", "Berhasil menambahkan kelas!");
+            if ($result) {
+                return back()->with("success", "Berhasil menambahkan kelas!");
+            } else {
+                return back()->with("message", "Gagal menambahkan kelas!");
+            }
         } else {
             $request->validate(
                 [
@@ -66,49 +76,39 @@ class KelasController extends Controller
                 ]
             );
 
-            $matakuliah = explode('-', $request->matakuliah);
-            $dosen = explode('-', $request->dosen);
+            //UPDATE KELAS
+            $result = DB::table('kelas')->where('id', $id)->update([
+                "matakuliah_id" => $matakuliah,
+                "hari_id" => $hari,
+                "jam_id" => $jam,
+                "periode_id" => $periode,
+            ]);
+            Session::forget("editKelas");
 
-            $namaMatkul = $matakuliah[0];
-            $jurusanMatkul = $matakuliah[1];
-
-            $listKelas = Session::get('listKelas');
-            foreach ($listKelas as $key => $kelas) {
-                if ($kelas["id"] == $request->id) {
-                    $kelas["matakuliah"] = $namaMatkul;
-                    $kelas["hari"] = $request->hari;
-                    $kelas["jam"] = $request->jam;
-                    $kelas["periode"] = $request->periode;
-                    $listKelas[$key] = $kelas;
-                    Session::put('listKelas', $listKelas);
-                    Session::forget("editKelas");
-                    return back()->with("success", "Berhasil mengedit kelas!");
-                }
+            if ($result) {
+                return back()->with("success", "Berhasil mengedit kelas!");
+            } else {
+                return back()->with("message", "Gagal mengedit kelas!");
             }
         }
-        return back()->with("message", "Gagal menambah / mengedit kelas!");
     }
 
     public function action(Request $request)
     {
         if (isset($request->edit)) {
-            $listKelas = Session::get('listKelas');
-            foreach ($listKelas as $key => $kelas) {
-                if ($kelas['id'] == $request->edit) {
-                    Session::put("editKelas", $kelas);
-                    return back();
-                }
-            }
+            Session::put("editKelas", DB::table('kelas')->where('id', $request->edit)->first());
+            return back();
         } else if (isset($request->delete)) {
-            $listKelas = Session::get('listKelas');
-            foreach ($listKelas as $key => $kelas) {
-                if ($kelas['id'] == $request->delete) {
-                    unset($listKelas[$key]);
-                    Session::put('listKelas', $listKelas);
-                    return back()->with("success", "Berhasil menghapus kelas!");
-                }
+            Session::forget("editKelas");
+
+            //DELETE KELAS
+            $result = DB::table('kelas')->where('id', $request->delete)->delete();
+            if ($result) {
+                return back()->with("success", "Berhasil menghapus kelas!");
+            } else {
+                return back()->with("message", "Gagal menghapus kelas!");
             }
         }
-        return back()->with("message", "Gagal menghapus kelas!");
+        return back()->with("message", "Gagal melakukan action!");
     }
 }

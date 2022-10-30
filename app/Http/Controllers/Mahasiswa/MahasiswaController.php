@@ -7,6 +7,7 @@ use App\Rules\RuleNamaLengkap;
 use App\Rules\RuleNamaLengkapVowel;
 use App\Rules\RuleNomorTelepon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class MahasiswaController extends Controller
@@ -20,65 +21,73 @@ class MahasiswaController extends Controller
     public function viewRegister()
     {
         // Session::flush();
-        return view('pages.mahasiswa.register');
+        $listJurusan = DB::table('jurusan')->get();
+        return view('pages.mahasiswa.register', compact("listJurusan"));
     }
 
     public function register(Request $request)
     {
+        $nama = $request->nama;
+        $email = $request->email;
+        $telepon = $request->telepon;
+        $tanggal_lahir = $request->tanggal_lahir;
+        $jurusan = $request->jurusan;
+        $angkatan = $request->angkatan;
+
+        $listTeleponDosen = DB::table('dosen')->get('dosen_telepon');
         $request->validate(
             [
                 "nama" => ["required", new RuleNamaLengkap(), new RuleNamaLengkapVowel()],
-                "email" => "required | email",
-                "nomor" => ["required", "numeric", "digits_between:10,12", new RuleNomorTelepon(Session::get('listUser'))],
-                "tanggal" => "required | date | before:-18 years",
+                "email" => "required | email | unique:mahasiswa,mahasiswa_email",
+                "telepon" => ["required", "numeric", "digits_between:10,12", "unique:mahasiswa,mahasiswa_telepon", new RuleNomorTelepon($listTeleponDosen, "dosen")],
+                "tanggal_lahir" => "required | date | before:-18 years",
                 "jurusan" => "required",
-                "tahun" => "required",
+                "angkatan" => "required",
                 "snk" => "accepted"
             ],
             [
                 "required" => "Field wajib diisi!",
-                "digits_between" => "Nomor telepon minimal 10 digit dan maksimal 12 digit!",
                 "email" => "Email yang digunakan harus email valid!",
+                "email.unique" => "Email harus unik!",
+                "digits_between" => "Nomor telepon minimal 10 digit dan maksimal 12 digit!",
+                "telepon.unique" => "Nomor telepon harus unik!",
                 "before" => "Umur harus lebih dari 17 tahun!",
                 "accepted" => "Konfirmasi syarat dan ketentuan harus tercentang!",
             ]
         );
 
         //NRP
-        $splitTahun = str_split($request->tahun);
+        $splitTahun = str_split($angkatan);
         $nrp = $splitTahun[0] . $splitTahun[2] . $splitTahun[3];
-        $id = 1;
-        foreach (Session::get('listUser') as $user) {
-            if ($user['role'] == 'mahasiswa') {
-                if (substr($user["username"], 0, 3) == $nrp) {
-                    $id += 1;
-                }
-            }
-        }
+        $jumlahMahasiswa = DB::table('mahasiswa')->count();
+        $id = $jumlahMahasiswa + 1;
         for ($i = 0; $i < 3 - strlen($id); $i++) {
             $nrp .= "0";
         }
         $nrp .= $id;
 
         //PASSWORD
-        $words = explode(' ', $request->nama);
-        $yearFormat = date("Y", strtotime($request->tanggal));
+        $words = explode(' ', $nama);
+        $yearFormat = date("Y", strtotime($tanggal_lahir));
         $year = str_split($yearFormat);
         $password = $words[count($words) - 1] . $year[count($year) - 2] . $year[count($year) - 1];
 
-        //PUSH SESSION
-        Session::push('listUser', [
-            "username" => $nrp,
-            "nama" => $request->nama,
-            "email" => $request->email,
-            "nomor" => $request->nomor,
-            "tanggal" => $request->tanggal,
-            "jurusan" => $request->jurusan,
-            "tahun" => $request->tahun,
-            "password" => $password,
-            "role" => "mahasiswa"
+        //INSERT MAHASISWA
+        $result = DB::table('mahasiswa')->insert([
+            "mahasiswa_nrp" => $nrp,
+            "mahasiswa_nama" => $nama,
+            "mahasiswa_email" => $email,
+            "mahasiswa_telepon" => $telepon,
+            "mahasiswa_tanggal_lahir" => $tanggal_lahir,
+            "jurusan_id" => $jurusan,
+            "mahasiswa_angkatan" => $angkatan,
+            "mahasiswa_password" => $password,
         ]);
 
-        return back()->with("success", "Berhasil register!");
+        if ($result) {
+            return back()->with("success", "Berhasil register mahasiswa!");
+        } else {
+            return back()->withInput()->with("message", "Gagal register mahasiswa!");
+        }
     }
 }

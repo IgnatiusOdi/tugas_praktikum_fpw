@@ -7,7 +7,7 @@
         <div class="flex flex-col items-center justify-center mx-auto px-6 py-6 min-h-screen">
             <div class="text-5xl font-black mb-5">iH - class</div>
             <div class="card w-full lg:w-1/2">
-                <form action="{{ route('try-register-dosen') }}" method="POST" class="form-control bg-secondary px-16 py-12">
+                <form action="{{ route('register-dosen') }}" method="POST" class="form-control bg-secondary px-16 py-12">
                     @csrf
                     <div class="text-2xl font-bold text-center mb-4">Register Dosen</div>
 
@@ -45,9 +45,9 @@
                     <label class="label">
                         <span class="label-text">Nomor Telepon</span>
                     </label>
-                    <input type="tel" name="nomor" value="{{ old('nomor') }}" placeholder="Nomor Telepon"
+                    <input type="tel" name="telepon" value="{{ old('telepon') }}" placeholder="Nomor Telepon"
                         class="input input-bordered input-primary w-full bg-white" />
-                    @error('nomor')
+                    @error('telepon')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
 
@@ -55,9 +55,9 @@
                     <label class="label">
                         <span class="label-text">Tanggal Lahir</span>
                     </label>
-                    <input type="date" name="tanggal" value="{{ old('tanggal') }}" placeholder="Tanggal Lahir"
+                    <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" placeholder="Tanggal Lahir"
                         class="input input-bordered input-primary w-full bg-white">
-                    @error('tanggal')
+                    @error('tanggal_lahir')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
 
@@ -66,18 +66,18 @@
                         <span class="label-text">Jurusan Lulusan</span>
                     </label>
                     <select name="jurusan" value="{{ old('jurusan') }}" class="select select-primary w-full bg-white">
-                        <option value="INF" selected>S1-Informatika</option>
-                        <option value="SIB">S1-Sistem Informasi Bisnis</option>
-                        <option value="DKV">S1-Desain Komunikasi Visual</option>
+                        @foreach ($listJurusan as $jurusan)
+                            <option value="{{$jurusan->id}}">{{$jurusan->jurusan_nama}}</option>
+                        @endforeach
                     </select>
 
                     {{-- Tahun Kelulusan --}}
                     <label class="label">
                         <span class="label-text">Tahun Kelulusan</span>
                     </label>
-                    <input type="date" name="tahun" value="{{ old('tahun') }}" placeholder="Tahun Kelulusan"
+                    <input type="date" name="kelulusan" value="{{ old('kelulusan') }}" placeholder="Tahun Kelulusan"
                         class="input input-bordered input-primary w-full bg-white" />
-                    @error('tahun')
+                    @error('kelulusan')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
 

@@ -25,19 +25,19 @@ use Illuminate\Support\Facades\Route;
 
 //REDIRECT
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('view-login');
 });
 
 //LOGIN
-Route::get('login', [UserController::class, 'viewLogin'])->name('login');
-Route::post('login', [UserController::class, 'login'])->name('try-login');
+Route::get('login', [UserController::class, 'viewLogin'])->name('view-login');
+Route::post('login', [UserController::class, 'login'])->name('login');
 
 //REGISTER
 Route::prefix('register')->group(function () {
-    Route::get('/', [MahasiswaController::class, 'viewRegister'])->name('register-mahasiswa');
-    Route::post('/', [MahasiswaController::class, 'register'])->name('try-register-mahasiswa');
-    Route::get('dosen', [DosenController::class, 'viewRegister'])->name('register-dosen');
-    Route::post('dosen', [DosenController::class, 'register'])->name('try-register-dosen');
+    Route::get('/', [MahasiswaController::class, 'viewRegister'])->name('view-register-mahasiswa');
+    Route::post('/', [MahasiswaController::class, 'register'])->name('register-mahasiswa');
+    Route::get('dosen', [DosenController::class, 'viewRegister'])->name('view-register-dosen');
+    Route::post('dosen', [DosenController::class, 'register'])->name('register-dosen');
 });
 
 //ADMIN
@@ -97,6 +97,3 @@ Route::prefix('mahasiswa')->group(function () {
     Route::get('profile', [MahasiswaProfileController::class, "view"])->name("mahasiswa-profile");
     Route::post('profile', [MahasiswaProfileController::class, "edit"])->name("mahasiswa-edit-profile");
 });
-
-//DUMMY
-Route::get('dummy', [UserController::class, "dummy"]);

@@ -4,14 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class PeriodeController extends Controller
 {
     public function view()
     {
-        // Session::put('listPeriode', []);
-        return view('pages.admin.periode');
+        $listPeriode = DB::table('periode')->get();
+        return view('pages.admin.periode', compact("listPeriode"));
     }
 
     public function tambah(Request $request)
@@ -19,58 +20,60 @@ class PeriodeController extends Controller
         $tahun1 = $request->tahun1;
         $tahun2 = $request->tahun2;
 
-        //CEK FIELD KOSONG
-        if (empty($tahun1) || empty($tahun2)) {
-            return back()->with("message", "Field tidak boleh kosong!");
-        }
-        //CEK TAHUN 1 >= TAHUN 2
-        else if ($tahun1 >= $tahun2) {
-            return back()->with("message", "Tahun 1 tidak boleh lebih besar atau sama dengan Tahun 2!");
-        }
+        $request->validate(
+            [
+                "tahun1" => "required",
+                "tahun2" => "required | after:tahun1",
+            ],
+            [
+                "required" => "Field harus diisi!",
+                "after" => "Tahun 1 tidak boleh lebih besar atau sama dengan Tahun 2!",
+            ],
+        );
 
-        Session::push('listPeriode', ["tahun" => $tahun1 . "-" . $tahun2, "status" => 0]);
-        return back()->with("success", "Berhasil menambahkan periode!");
+        //INSERT PERIODE
+        $result = DB::table('periode')->insert([
+            "periode_tahun" => $tahun1 . "/" . $tahun2,
+            "periode_status" => 0,
+        ]);
+
+        if ($result) {
+            return back()->with("success", "Berhasil menambahkan periode!");
+        } else {
+            return back()->with("message", "Gagal menambahkan periode!");
+        }
     }
 
     public function action(Request $request)
     {
-        $listPeriode = Session::get('listPeriode');
-        $periodeAktif = Session::get('periodeAktif');
+        $id = $request->id;
 
-        //CHANGE STATUS
         if (isset($request->change)) {
-            //CARI PERIODE
-            foreach ($listPeriode as $key => $periode) {
-                if ($periode['tahun'] == $request->tahun) {
-                    if ($periode['status'] == 0) {
-                        $periode['status'] = 1;
-                        Session::push('periodeAktif', $periode['tahun']);
-                    } else {
-                        $periode['status'] = 0;
-                        foreach ($periodeAktif as $keyAktif => $aktif) {
-                            if ($aktif == $periode['tahun']) {
-                                unset($periodeAktif[$keyAktif]);
-                                Session::put('periodeAktif', $periodeAktif);
-                            }
-                        }
-                    }
-                    $listPeriode[$key]['status'] = $periode['status'];
-                    Session::put('listPeriode', $listPeriode);
-                    return back()->with("success", "Berhasil mengubah status periode!");
-                }
+            //UPDATE STATUS PERIODE
+            if ($request->change == 0) {
+                $result = DB::table('periode')->where('id', $id)->update([
+                    "periode_status" => 1
+                ]);
+            } else {
+                $result = DB::table('periode')->where('id', $id)->update([
+                    "periode_status" => 0
+                ]);
+            }
+
+            if ($result) {
+                return back()->with("success", "Berhasil mengubah status periode!");
+            } else {
+                return back()->with("message", "Gagal mengubah status periode!");
+            }
+        } elseif (isset($request->delete)) {
+            //DELETE PERIODE
+            $result = DB::table('periode')->where('id', $id)->delete();
+
+            if ($result) {
+                return back()->with("success", "Berhasil menghapus periode!");
+            } else {
+                return back()->with("message", "Gagal menghapus periode!");
             }
         }
-        //DELETE
-        elseif (isset($request->delete)) {
-            //CARI PERIODE
-            foreach ($listPeriode as $key => $periode) {
-                if ($periode['tahun'] == $request->tahun) {
-                    unset($listPeriode[$key]);
-                    Session::put('listPeriode', $listPeriode);
-                    return back()->with("success", "Berhasil menghapus periode!");
-                }
-            }
-        }
-        return back()->with("message", "Gagal melakukan action!");
     }
 }

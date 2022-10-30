@@ -7,7 +7,7 @@
         <div class="flex flex-col items-center justify-center mx-auto h-screen">
             <div class="text-5xl font-black mb-5">iH - class</div>
             <div class="card w-fit">
-                <form action="{{ route('try-login') }}" method="POST" class="form-control bg-secondary px-16 py-12">
+                <form action="{{ route('login') }}" method="POST" class="form-control bg-secondary px-16 py-12">
                     @csrf
                     <div class="text-2xl font-bold text-center mb-4">Login</div>
                     {{-- Username --}}
