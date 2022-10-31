@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('dosen_email')->unique();
             $table->string('dosen_telepon')->unique();
             $table->date('dosen_tanggal_lahir');
-            $table->foreignId('jurusan_id')->constrained('jurusan')->cascadeOnDelete();
+            $table->foreignId('jurusan_id')->constrained('jurusan')->cascadeOnUpdate()->cascadeOnDelete();
             $table->date('dosen_kelulusan');
             $table->string('dosen_password');
             $table->timestamps();

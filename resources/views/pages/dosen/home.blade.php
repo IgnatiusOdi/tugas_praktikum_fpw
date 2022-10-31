@@ -6,5 +6,5 @@
 @section('profile', route('dosen-profile'))
 
 @section('content')
-    <div class="font-bold text-5xl p-10">Welcome, {{ Session::get('dosen')["nama"] }}!</div>
+    <div class="font-bold text-5xl p-10">Welcome, {{ Session::get('dosen')->dosen_nama }}!</div>
 @endsection

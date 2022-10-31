@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('materi_minggu');
             $table->string('materi_judul');
             $table->string('materi_deskripsi');
-            $table->foreignId('kelas_id')->constrained('kelas')->cascadeOnDelete();
+            $table->foreignId('kelas_id')->constrained('kelas')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

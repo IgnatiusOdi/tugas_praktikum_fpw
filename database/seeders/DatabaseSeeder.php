@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             MateriSeeder::class,
             AbsensiSeeder::class,
             PengumumanSeeder::class,
+            KelasMahasiswaSeeder::class,
         ]);
     }
 }

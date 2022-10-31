@@ -4,45 +4,90 @@ namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class KelasController extends Controller
 {
     public function view(Request $request)
     {
-        $url = $request->segment(3);
-        $periode = "";
-        if (isset($url)) {
-            $listPeriode = explode('-', $url);
-            $periode = $listPeriode[0] . "/" . $listPeriode[1];
-        }
-
-        return view("pages.dosen.kelas", compact("url", "periode"));
+        $listKelas = DB::table('kelas')->where('dosen_id', Session::get('dosen')->id)
+            ->join('matakuliah', 'matakuliah.id', 'kelas.matakuliah_id')
+            ->join('hari', 'hari.id', 'kelas.hari_id')
+            ->join('jam', 'jam.id', 'kelas.jam_id')
+            ->join('periode', 'periode.id', 'kelas.periode_id')
+            ->get(["kelas.id", "matakuliah_nama", "hari_nama", "jam_nama", "periode_tahun"]);
+        return view("pages.dosen.kelas", compact("listKelas"));
     }
 
     public function detail(Request $request)
     {
-        foreach (Session::get('listKelas') as $kelas) {
-            if ($kelas['id'] == $request->id) {
-                $detail = $kelas;
-                return view("pages.dosen.detail", compact("detail"));
-            }
+        Session::forget('editAbsensi');
+        $kelas = DB::table('kelas')
+            ->where('id', $request->id)
+            ->first();
+        $listPengumuman = DB::table('pengumuman')
+            ->where('kelas_id', $request->id)
+            ->get();
+        $listMateri = DB::table('materi')
+            ->where('kelas_id', $request->id)
+            ->orderBy('materi_minggu')
+            ->get();
+
+        if ($kelas) {
+            return view("pages.dosen.detail", compact("kelas", "listPengumuman", "listMateri"));
+        } else {
+            return back()->with("message", "Gagal membuka detail kelas!");
         }
-        return back()->with("message", "Gagal membuka detail kelas!");
     }
 
     public function absensi(Request $request)
     {
-        foreach (Session::get('listKelas') as $kelas) {
-            if ($kelas['id'] == $request->id) {
-                $detail = $kelas;
-                return view("pages.dosen.absensi", compact("detail"));
-            }
+        if (Session::has('editAbsensi')) {
+            // EDIT
+            $id = $request->id;
+            $absensi = $request->absensi;
+            $materi = DB::table('materi')->where('id', $absensi)->first();
+            $listMahasiswa = DB::table('absensi')
+                ->where('materi_id', $absensi)
+                ->join('mahasiswa', 'mahasiswa.id', 'absensi.mahasiswa_id')
+                ->get(['mahasiswa.id', "mahasiswa.mahasiswa_nrp", 'mahasiswa.mahasiswa_nama', 'absensi_status']);
+
+            return view('pages.dosen.absensi', compact('id', 'absensi', 'materi', 'listMahasiswa'));
+        } else {
+            // CREATE
+            $kelas = DB::table('kelas')
+                ->where('id', $request->id)
+                ->first();
+            $listMahasiswa = DB::table('kelas_mahasiswa')
+                ->where('kelas_id', $request->id)
+                ->join('mahasiswa', 'mahasiswa.id', 'kelas_mahasiswa.mahasiswa_id')
+                ->get(['mahasiswa.id', "mahasiswa.mahasiswa_nrp", 'mahasiswa.mahasiswa_nama']);
+
+            return view("pages.dosen.absensi", compact("kelas", "listMahasiswa"));
         }
         return back()->with("message", "Gagal membuka absensi!");
     }
 
-    public function create(Request $request)
+    public function actionAbsensi(Request $request)
+    {
+        if (isset($request->edit)) {
+            $absensi = $request->edit;
+            $id = DB::table('materi')->where('id', $absensi)->pluck('kelas_id')->first();
+            Session::put('editAbsensi', $absensi);
+            return redirect()->route('dosen-kelas-absensi', compact("id", "absensi"));
+        } else if (isset($request->delete)) {
+            //DELETE MATERI
+            $result = DB::table('materi')->where('id', $request->delete)->delete();
+            if ($result) {
+                return back()->with("success", "Berhasil menghapus absensi!");
+            } else {
+                return back()->with("message", "Gagal menghapus absensi!");
+            }
+        }
+    }
+
+    public function editAbsensi(Request $request)
     {
         $request->validate([
             "minggu" => "required | integer | min:1 | max:14",
@@ -50,22 +95,93 @@ class KelasController extends Controller
             "deskripsi" => "required",
         ]);
 
-        $kelas = Session::get('listKelas');
-        array_push($kelas[$request->id - 1]['absensi'], [
-            "minggu" => $request->minggu,
-            "materi" => $request->materi,
-            "deskripsi" => $request->deskripsi,
-            "hadir" => $request->hadir ?? []
+        //UPDATE MATERI
+        dd($request->absensi);
+        // $result = DB::table('materi')->where('id', $request->)->update([
+
+        // ])
+    }
+
+    public function createAbsensi(Request $request)
+    {
+        $request->validate([
+            "minggu" => "required | integer | min:1 | max:14",
+            "materi" => "required",
+            "deskripsi" => "required",
         ]);
 
-        Session::put('listKelas', $kelas);
+        //INSERT MATERI
+        $result = DB::table('materi')->insert([
+            "materi_minggu" => $request->minggu,
+            "materi_judul" => $request->materi,
+            "materi_deskripsi" => $request->deskripsi,
+            "kelas_id" => $request->id,
+        ]);
 
-        foreach (Session::get('listKelas') as $kelas) {
-            if ($kelas['id'] == $request->id) {
-                $detail = $kelas;
-                $id = $detail['id'];
-                return redirect()->route('dosen-kelas-detail', compact("id"))->with("success", "Berhasil membuat absensi!");
+        if (!$result) {
+            return back()->withInput()->with('message', "Gagal membuat absensi!");
+        }
+
+        //INSERT ABSENSI
+        $indexMateri = DB::table('materi')->latest('id')->get('id')->first();
+        $listMahasiswa = DB::table('kelas_mahasiswa')->where('kelas_id', $request->id)->get();
+
+        $kehadiran = [];
+        $hadir = $request->hadir;
+        $counter = 0;
+        foreach ($listMahasiswa as $mahasiswa) {
+            $status = false;
+            if ($hadir && count($hadir) > 0) {
+                if ($hadir[$counter] == $mahasiswa->id) {
+                    unset($hadir[$counter]);
+                    $counter++;
+                    $status = true;
+                }
             }
+            array_push($kehadiran, [
+                "materi_id" => $indexMateri->id,
+                "mahasiswa_id" => $mahasiswa->id,
+                "absensi_status" => $status,
+            ]);
+        }
+
+        $result = DB::table('absensi')->insert($kehadiran);
+
+        if (!$result) {
+            return back()->withInput()->with('message', "Gagal membuat absensi!");
+        }
+
+        $id = $request->id;
+        return redirect()->route('dosen-kelas-detail', compact("id"))->with("success", "Berhasil membuat absensi!");
+    }
+
+    public function pengumuman(Request $request)
+    {
+        $id = $request->id;
+        return view('pages.dosen.pengumuman', compact("id"));
+    }
+
+    public function createPengumuman(Request $request)
+    {
+        $id = $request->id;
+        $deskripsi = $request->deskripsi;
+        $link = $request->link;
+
+        $request->validate([
+            "deskripsi" => "required",
+        ]);
+
+        //INSERT PENGUMUMAN
+        $result = DB::table('pengumuman')->insert([
+            "kelas_id" => $id,
+            "pengumuman_deskripsi" => $deskripsi,
+            "pengumuman_link" => $link,
+        ]);
+
+        if ($result) {
+            return redirect()->route('dosen-kelas-detail', compact("id"))->with("success", "Berhasil membuat pengumuman!");
+        } else {
+            return back()->withInput()->with("message", "Gagal membuat pengumuman!");
         }
     }
 }

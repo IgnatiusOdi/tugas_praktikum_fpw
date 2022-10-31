@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('matakuliah_id')->constrained('matakuliah')->cascadeOnDelete();
-            $table->foreignId('hari_id')->constrained('hari')->cascadeOnDelete();
-            $table->foreignId('jam_id')->constrained('jam')->cascadeOnDelete();
-            $table->foreignId('periode_id')->constrained('periode')->cascadeOnDelete();
-            $table->foreignId('dosen_id')->constrained('dosen')->cascadeOnDelete();
+            $table->foreignId('matakuliah_id')->constrained('matakuliah')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('hari_id')->constrained('hari')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('jam_id')->constrained('jam')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('periode_id')->constrained('periode')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('dosen_id')->constrained('dosen')->cascadeOnUpdate()->cascadeOnDelete();
         });
     }
 

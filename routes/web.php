@@ -73,11 +73,15 @@ Route::prefix('dosen')->group(function () {
     Route::get('/', [DosenHomeController::class, "view"])->name("dosen");
     Route::post('/', [DosenController::class, "logout"])->name("dosen-logout");
     //KELAS
-    // Route::get('kelas/{kode_periode?}', [DosenKelasController::class, 'view'])->name("dosen-kelas");
+    // Route::get('kelas/{kode_periode?}', [DosenKelasController::class, 'view'])->name("dosen-kelas-periode");
     Route::get('kelas', [DosenKelasController::class, 'view'])->name("dosen-kelas");
     Route::get('kelas/{id}', [DosenKelasController::class, 'detail'])->name('dosen-kelas-detail');
-    Route::get('kelas/{id}/absensi', [DosenKelasController::class, 'absensi'])->name('dosen-kelas-absensi');
-    Route::post('kelas/{id}/absensi', [DosenKelasController::class, 'create'])->name('dosen-kelas-create-absensi');
+    Route::post('kelas/{id}', [DosenKelasController::class, 'actionAbsensi'])->name('dosen-kelas-action-absensi');
+    Route::get('kelas/{id}/absensi/{absensi?}', [DosenKelasController::class, 'absensi'])->name('dosen-kelas-absensi');
+    Route::post('kelas/{id}/absensi', [DosenKelasController::class, 'createAbsensi'])->name('dosen-kelas-create-absensi');
+    Route::post('kelas/{id}/absensi/{absensi}', [DosenKelasController::class, 'editAbsensi'])->name('dosen-kelas-edit-absensi');
+    Route::get('kelas/{id}/pengumuman', [DosenKelasController::class, 'pengumuman'])->name('dosen-kelas-pengumuman');
+    Route::post('kelas/{id}/pengumuman', [DosenKelasController::class, 'createPengumuman'])->name('dosen-kelas-create-pengumuman');
     //PROFILE
     Route::get('profile', [DosenProfileController::class, "view"])->name("dosen-profile");
     Route::post('profile', [DosenProfileController::class, "edit"])->name("dosen-edit-profile");
@@ -90,7 +94,7 @@ Route::prefix('mahasiswa')->group(function () {
     Route::post('/', [MahasiswaController::class, "logout"])->name("mahasiswa-logout");
     Route::post('join', [MahasiswaHomeController::class, 'join'])->name("mahasiswa-join-kelas");
     //KELAS
-    // Route::get('kelas/{kode_periode?}', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
+    // Route::get('kelas/{kode_periode?}', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas-periode");
     Route::get('kelas', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
     Route::get('kelas/{id}', [MahasiswaKelasController::class, "detail"])->name('mahasiswa-kelas-detail');
     //PROFILE

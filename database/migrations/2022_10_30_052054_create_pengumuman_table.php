@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('pengumuman', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kelas_id')->constrained('kelas')->cascadeOnDelete();
+            $table->foreignId('kelas_id')->constrained('kelas')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('pengumuman_deskripsi');
             $table->string('pengumuman_link')->nullable();
             $table->timestamps();

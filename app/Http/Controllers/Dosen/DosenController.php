@@ -41,7 +41,7 @@ class DosenController extends Controller
                 "username" => ["required", "alpha_dash", "min:5", "max:10", "unique:dosen,dosen_username"],
                 "nama" => "required",
                 "email" => "required | email | unique:dosen,dosen_email",
-                "telepon" => ["required", "numeric", "digits_between:10,12", new RuleNomorTelepon($listTeleponMahasiswa, "mahasiswa")],
+                "telepon" => ["required", "numeric", "digits_between:10,12", "unique:dosen,dosen_telepon", new RuleNomorTelepon($listTeleponMahasiswa, "mahasiswa")],
                 "tanggal_lahir" => "required | date | before:-22 years",
                 "jurusan" => "required",
                 "kelulusan" => "required | date | after_or_equal:01/01/1990 | before:today",

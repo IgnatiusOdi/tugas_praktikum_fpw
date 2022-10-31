@@ -49,7 +49,7 @@ class KelasSeeder extends Seeder
                 "hari_id" => "1",
                 "jam_id" => "5",
                 "periode_id" => "5",
-                "dosen_id" => "1",
+                "dosen_id" => "2",
             ],
         ];
         DB::table('kelas')->insert($list_kelas);

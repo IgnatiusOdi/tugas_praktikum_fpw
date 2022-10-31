@@ -28,33 +28,27 @@
                     <th>Hari</th>
                     <th>Jam</th>
                     <th>Periode</th>
-                    <th>Dosen</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (Session::get('listKelas') as $kelas)
-                    @if ($kelas['dosen'] == Session::get('dosen')['nama'])
-                        <tr>
-                            <th>{{ $kelas['matakuliah'] }}</th>
-                            <td>{{ $kelas['hari'] }}</td>
-                            <td>{{ $kelas['jam'] }}</td>
-                            <td>
-                                @php
-                                    $p = explode('-', $kelas['periode']);
-                                    $p = $p[0] . '/' . $p[1];
-                                @endphp
-                                {{ $p }}
-                            </td>
-                            <td>{{ $kelas['dosen'] }}</td>
-                            <td>
-                                <form action="{{ route('dosen-kelas-detail', $kelas['id']) }}" method="GET">
-                                    <button class="btn btn-info w-2/3">Detail</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endif
-                @endforeach
+                @forelse ($listKelas as $kelas)
+                    <tr>
+                        <th>{{ $kelas->matakuliah_nama }}</th>
+                        <td>{{ $kelas->hari_nama }}</td>
+                        <td>{{ $kelas->jam_nama }}</td>
+                        <td>{{ $kelas->periode_tahun }}</td>
+                        <td>
+                            <form action="{{ route('dosen-kelas-detail', $kelas->id) }}" method="GET">
+                                <button class="btn btn-info w-2/3">Detail</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5">Tidak ada kelas saat ini!</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

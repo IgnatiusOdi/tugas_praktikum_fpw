@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('matakuliah_kode');
             $table->string('matakuliah_nama');
-            $table->foreignId('jurusan_id')->constrained('jurusan')->cascadeOnDelete();
+            $table->foreignId('jurusan_id')->constrained('jurusan')->cascadeOnUpdate()->cascadeOnDelete();
             $table->integer('matakuliah_semester');
             $table->integer('matakuliah_sks');
         });

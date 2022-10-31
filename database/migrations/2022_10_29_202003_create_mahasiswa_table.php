@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('mahasiswa_email')->unique();
             $table->string('mahasiswa_telepon')->unique();
             $table->date('mahasiswa_tanggal_lahir');
-            $table->foreignId('jurusan_id')->constrained('jurusan')->cascadeOnDelete();
+            $table->foreignId('jurusan_id')->constrained('jurusan')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('mahasiswa_angkatan');
             $table->string('mahasiswa_password');
             $table->timestamps();
