@@ -13,51 +13,55 @@
             <div class="card-body bg-secondary bg-opacity-90">
                 <form action="{{ route('mahasiswa-edit-profile') }}" method="POST">
                     @csrf
-                    {{-- Nama --}}
-                    <h2 class="card-title">Nama : {{ Session::get('mahasiswa')['nama'] }}</h2>
-                    <input type="hidden" name="nama" value="{{ Session::get('mahasiswa')['nama'] }}">
+                    <input type="hidden" name="id" value="{{ $mahasiswa->id }}">
 
                     {{-- NRP --}}
-                    <p>NRP : {{ Session::get('mahasiswa')['username'] }}</p>
-                    <input type="hidden" name="username" value="{{ Session::get('mahasiswa')['username'] }}">
+                    <h2 class="card-title">NRP : {{ $mahasiswa->mahasiswa_nrp }}</h2>
 
-                    {{-- Username --}}
+                    {{-- Nama --}}
+                    <p>Nama : {{ $mahasiswa->mahasiswa_nama }}</p>
+
+                    {{-- Email --}}
                     <p>Email :
-                        <input type="email" name="email" value="{{ Session::get('mahasiswa')['email'] }}"
-                            placeholder="Email" class="input input-ghost w-full font-medium">
+                        <input type="email" name="email" value="{{ $mahasiswa->mahasiswa_email }}" placeholder="Email"
+                            class="input input-ghost w-full font-medium">
+                        @error('email')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
                     </p>
 
                     {{-- Nomor --}}
                     <p>Nomor Telepon :
-                        <input type="tel" name="nomor" value="{{ Session::get('mahasiswa')['nomor'] }}"
+                        <input type="tel" name="telepon" value="{{ $mahasiswa->mahasiswa_telepon }}"
                             placeholder="Nomor Telepon" class="input input-ghost w-full font-medium">
+                        @error('telepon')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
                     </p>
 
                     {{-- Tanggal --}}
-                    <p>Tanggal Lahir : {{ date('d F Y', strtotime(Session::get('mahasiswa')['tanggal'])) }}</p>
-                    <p>Jurusan Lulusan :
-                        @if (Session::get('mahasiswa')['jurusan'] == 'INF')
-                            S1-Informatika
-                        @elseif (Session::get('mahasiswa')['jurusan'] == 'SIB')
-                            S1-Sistem Informasi Bisnis
-                        @elseif (Session::get('mahasiswa')['jurusan'] == 'DKV')
-                            S1-Desain Komunikasi Visual
-                        @endif
-                    </p>
+                    <p>Tanggal Lahir : {{ date('d F Y', strtotime($mahasiswa->mahasiswa_tanggal_lahir)) }}</p>
+                    <p>Jurusan Lulusan : {{ $mahasiswa->jurusan_nama }}</p>
 
                     {{-- Tahun Angkatan --}}
-                    <p>Tahun Angkatan : {{ Session::get('mahasiswa')['tahun'] }}</p>
+                    <p>Tahun Angkatan : {{ $mahasiswa->mahasiswa_angkatan }}</p>
 
                     {{-- Password --}}
                     <p>Password :
-                        <input type="password" name="password" value="{{ Session::get('mahasiswa')['password'] }}"
+                        <input type="password" name="password" value="{{ $mahasiswa->mahasiswa_password }}"
                             placeholder="Password" class="input input-ghost w-full font-medium">
+                        @error('password')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
                     </p>
 
                     {{-- Confirm Password --}}
                     <p>Confirm Password :
-                        <input type="password" name="confirmation" value="" placeholder="Confirm Password"
+                        <input type="password" name="password_confirmation" value="" placeholder="Confirm Password"
                             class="input input-ghost w-full font-medium">
+                        @error('password_confirmation')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
                     </p>
 
                     {{-- Button Edit --}}

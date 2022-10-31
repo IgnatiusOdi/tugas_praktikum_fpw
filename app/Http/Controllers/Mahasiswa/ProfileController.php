@@ -4,54 +4,71 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use App\Rules\RuleNomorTelepon;
-use App\Rules\RulePassword;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class ProfileController extends Controller
 {
     public function view()
     {
-        
-        return view("pages.mahasiswa.profile");
+        $mahasiswa = DB::table('mahasiswa')
+            ->join('jurusan', 'jurusan.id', 'mahasiswa.jurusan_id')
+            ->where('mahasiswa.id', Session::get('mahasiswa')->id)
+            ->first([
+                "mahasiswa.id", "mahasiswa_nama", "mahasiswa_nrp", "mahasiswa_email", "mahasiswa_telepon", "mahasiswa_tanggal_lahir", "jurusan_nama",
+                "mahasiswa_angkatan", "mahasiswa_password"
+            ]);
+        return view("pages.mahasiswa.profile", compact('mahasiswa'));
     }
 
     public function edit(Request $request)
     {
-        $username = $request->username;
+        $id = $request->id;
+        $email = $request->email;
+        $telepon = $request->telepon;
+        $password = $request->password;
 
-        //CARI INDEX MAHASISWA
-        $index = -1;
-        $listUser = Session::get('listUser');
-        foreach ($listUser as $key => $user) {
-            if ($user['role'] == 'mahasiswa') {
-                if ($user['username'] == $username) {
-                    $index = $key;
-                    break;
-                }
-            }
-        }
-
+        $listTeleponDosen = DB::table('dosen')->get('dosen_telepon');
         $request->validate(
             [
                 "email" => "required | email",
-                "nomor" => ["required", "numeric", "digits_between:10,12", new RuleNomorTelepon(Session::get('listUser'), $index)],
-                "password" => ["required", "alpha_dash", "min:6", "max:12",  new RulePassword($request->username), "confirmed"],
+                "telepon" => ["required", "numeric", "digits_between:10,12", new RuleNomorTelepon($listTeleponDosen, "dosen")],
+                "password" => ["required", "alpha_dash", "min:6", "max:12", "confirmed"],
                 "password_confirmation" => "required",
             ]
         );
 
-        //REPLACE MAHASISWA
-        $mahasiswa = $listUser[$index];
-        $mahasiswa['email'] = $request->email;
-        $mahasiswa['nomor'] = $request->nomor;
-        $mahasiswa['password'] = $request->password;
-        $listUser[$index] = $mahasiswa;
+        // CEK EMAIL TELEPON UNIQUE
+        $countEmail = DB::table('mahasiswa')
+            ->where('id', "<>", $id)
+            ->where('mahasiswa_email', $email)
+            ->count();
+        if ($countEmail > 0) {
+            return back()->withInput()->withErrors(['email' => "Email harus unik!"]);
+        }
+        $countTelepon = DB::table('mahasiswa')
+            ->where('id', "<>", $id)
+            ->where('mahasiswa_telepon', $telepon)
+            ->count();
+        if ($countTelepon > 0) {
+            return back()->withInput()->withErrors(['telepon' => "Nomor telepon harus unik!"]);
+        }
 
-        //REPLACE SESSION
-        Session::put('mahasiswa', $mahasiswa);
-        Session::put('listMahasiswa', $listUser);
+        //UPDATE MAHASISWA
+        $result = DB::table('mahasiswa')->where('id', $id)->update([
+            "mahasiswa_email" => $email,
+            "mahasiswa_telepon" => $telepon,
+            "mahasiswa_password" => $password,
+        ]);
 
-        return back()->with("success", "Berhasil edit profile!");
+        if ($result) {
+            //REPLACE SESSION
+            $mahasiswa = DB::table('mahasiswa')->where('id', $id)->first();
+            Session::put('mahasiswa', $mahasiswa);
+            return back()->with("success", "Berhasil edit profile mahasiswa!");
+        } else {
+            return back()->with("message", "Gagal edit profile mahasiswa!");
+        }
     }
 }

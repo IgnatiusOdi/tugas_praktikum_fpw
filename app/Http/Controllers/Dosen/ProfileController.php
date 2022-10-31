@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Dosen;
 use App\Http\Controllers\Controller;
 use App\Rules\RuleNomorTelepon;
 use App\Rules\RulePassword;
-use App\Rules\RuleUsername;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -44,16 +43,25 @@ class ProfileController extends Controller
         );
 
         // CEK USERNAME EMAIL TELEPON UNIQUE
-        $countUsername = DB::table('dosen')->where('dosen_username', $username)->count();
-        if ($countUsername > 1) {
+        $countUsername = DB::table('dosen')
+            ->where('id', "<>", $id)
+            ->where('dosen_username', $username)
+            ->count();
+        if ($countUsername > 0) {
             return back()->withInput()->withErrors(['username' => "Username harus unik!"]);
         }
-        $countEmail = DB::table('dosen')->where('dosen_email', $email)->count();
-        if ($countEmail > 1) {
+        $countEmail = DB::table('dosen')
+            ->where('id', "<>", $id)
+            ->where('dosen_email', $email)
+            ->count();
+        if ($countEmail > 0) {
             return back()->withInput()->withErrors(['email' => "Email harus unik!"]);
         }
-        $countTelepon = DB::table('dosen')->where('dosen_telepon', $telepon)->count();
-        if ($countTelepon > 1) {
+        $countTelepon = DB::table('dosen')
+            ->where('id', "<>", $id)
+            ->where('dosen_telepon', $telepon)
+            ->count();
+        if ($countTelepon > 0) {
             return back()->withInput()->withErrors(['telepon' => "Nomor telepon harus unik!"]);
         }
 
