@@ -9,7 +9,7 @@
     <div class="flex flex-col items-center">
         <div class="font-bold text-3xl p-8">Absensi Kelas</div>
         @if (Session::has('editAbsensi'))
-            <form action="{{ route('dosen-kelas-edit-absensi', $id, $absensi) }}" method="POST"
+            <form action="{{ route('dosen-kelas-create-absensi', $id, $absensi) }}" method="POST"
                 class="form-control w-full px-12">
             @else
                 <form action="{{ route('dosen-kelas-create-absensi', $kelas->id) }}" method="POST"
@@ -82,6 +82,7 @@
         </div>
 
         <button class="btn btn-info mt-8">Simpan</button>
+        <input type="hidden" name="absensi" value="{{ Session::has('editAbsensi') ? $absensi : '' }}">
         </form>
     </div>
 @endsection

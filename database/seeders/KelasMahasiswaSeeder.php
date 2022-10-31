@@ -19,22 +19,27 @@ class KelasMahasiswaSeeder extends Seeder
             [
                 "kelas_id" => 1,
                 "mahasiswa_id" => 1,
+                "mahasiswa_status" => 1,
             ],
             [
                 "kelas_id" => 1,
                 "mahasiswa_id" => 2,
+                "mahasiswa_status" => 1,
             ],
             [
                 "kelas_id" => 1,
                 "mahasiswa_id" => 3,
+                "mahasiswa_status" => 1,
             ],
             [
                 "kelas_id" => 1,
                 "mahasiswa_id" => 4,
+                "mahasiswa_status" => 1,
             ],
             [
-                "kelas_id" => 5,
-                "mahasiswa_id" => 5,
+                "kelas_id" => 2,
+                "mahasiswa_id" => 1,
+                "mahasiswa_status" => 0,
             ]
         ];
         DB::table('kelas_mahasiswa')->insert($kelasMahasiswa);

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kelas_id')->constrained('kelas')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('mahasiswa_id')->constrained('mahasiswa')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->softDeletes();
+            $table->boolean('mahasiswa_status');
         });
     }
 

@@ -17,58 +17,58 @@ class JamSeeder extends Seeder
     {
         $list_jam = [
             [
-                "jam_nama" => "06.00",
+                "jam_nama" => "06:00",
             ],
             [
-                "jam_nama" => "07.00",
+                "jam_nama" => "07:00",
             ],
             [
-                "jam_nama" => "08.00",
+                "jam_nama" => "08:00",
             ],
             [
-                "jam_nama" => "09.00",
+                "jam_nama" => "09:00",
             ],
             [
-                "jam_nama" => "10.00",
+                "jam_nama" => "10:00",
             ],
             [
-                "jam_nama" => "11.00",
+                "jam_nama" => "11:00",
             ],
             [
-                "jam_nama" => "12.00",
+                "jam_nama" => "12:00",
             ],
             [
-                "jam_nama" => "13.00",
+                "jam_nama" => "13:00",
             ],
             [
-                "jam_nama" => "14.00",
+                "jam_nama" => "14:00",
             ],
             [
-                "jam_nama" => "15.00",
+                "jam_nama" => "15:00",
             ],
             [
-                "jam_nama" => "16.00",
+                "jam_nama" => "16:00",
             ],
             [
-                "jam_nama" => "17.00",
+                "jam_nama" => "17:00",
             ],
             [
-                "jam_nama" => "18.00",
+                "jam_nama" => "18:00",
             ],
             [
-                "jam_nama" => "19.00",
+                "jam_nama" => "19:00",
             ],
             [
-                "jam_nama" => "20.00",
+                "jam_nama" => "20:00",
             ],
             [
-                "jam_nama" => "21.00",
+                "jam_nama" => "21:00",
             ],
             [
-                "jam_nama" => "22.00",
+                "jam_nama" => "22:00",
             ],
             [
-                "jam_nama" => "23.00",
+                "jam_nama" => "23:00",
             ],
         ];
 

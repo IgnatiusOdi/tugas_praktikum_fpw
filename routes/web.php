@@ -78,8 +78,7 @@ Route::prefix('dosen')->group(function () {
     Route::get('kelas/{id}', [DosenKelasController::class, 'detail'])->name('dosen-kelas-detail');
     Route::post('kelas/{id}', [DosenKelasController::class, 'actionAbsensi'])->name('dosen-kelas-action-absensi');
     Route::get('kelas/{id}/absensi/{absensi?}', [DosenKelasController::class, 'absensi'])->name('dosen-kelas-absensi');
-    Route::post('kelas/{id}/absensi', [DosenKelasController::class, 'createAbsensi'])->name('dosen-kelas-create-absensi');
-    Route::post('kelas/{id}/absensi/{absensi}', [DosenKelasController::class, 'editAbsensi'])->name('dosen-kelas-edit-absensi');
+    Route::post('kelas/{id}/absensi/{absensi?}', [DosenKelasController::class, 'createAbsensi'])->name('dosen-kelas-create-absensi');
     Route::get('kelas/{id}/pengumuman', [DosenKelasController::class, 'pengumuman'])->name('dosen-kelas-pengumuman');
     Route::post('kelas/{id}/pengumuman', [DosenKelasController::class, 'createPengumuman'])->name('dosen-kelas-create-pengumuman');
     //PROFILE

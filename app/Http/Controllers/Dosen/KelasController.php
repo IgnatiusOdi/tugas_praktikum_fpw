@@ -87,21 +87,6 @@ class KelasController extends Controller
         }
     }
 
-    public function editAbsensi(Request $request)
-    {
-        $request->validate([
-            "minggu" => "required | integer | min:1 | max:14",
-            "materi" => "required",
-            "deskripsi" => "required",
-        ]);
-
-        //UPDATE MATERI
-        dd($request->absensi);
-        // $result = DB::table('materi')->where('id', $request->)->update([
-
-        // ])
-    }
-
     public function createAbsensi(Request $request)
     {
         $request->validate([
@@ -110,49 +95,90 @@ class KelasController extends Controller
             "deskripsi" => "required",
         ]);
 
-        //INSERT MATERI
-        $result = DB::table('materi')->insert([
-            "materi_minggu" => $request->minggu,
-            "materi_judul" => $request->materi,
-            "materi_deskripsi" => $request->deskripsi,
-            "kelas_id" => $request->id,
-        ]);
+        if (Session::has('editAbsensi')) {
+            //UPDATE MATERI
+            $result = DB::table('materi')->where('id', $request->id)->update([
+                "materi_minggu" => $request->minggu,
+                "materi_judul" => $request->materi,
+                "materi_deskripsi" => $request->deskripsi,
+            ]);
 
-        if (!$result) {
-            return back()->withInput()->with('message', "Gagal membuat absensi!");
-        }
+            if ($result) {
+                return back()->withInput()->with('message', "Gagal mengedit absensi!");
+            }
 
-        //INSERT ABSENSI
-        $indexMateri = DB::table('materi')->latest('id')->get('id')->first();
-        $listMahasiswa = DB::table('kelas_mahasiswa')->where('kelas_id', $request->id)->get();
+            //UPDATE ABSENSI
+            $listMahasiswa = DB::table('absensi')->where('materi_id', $request->absensi)->get();
+            $hadir = $request->hadir;
+            $counter = 0;
+            foreach ($listMahasiswa as $mahasiswa) {
+                $status = false;
+                if ($hadir && count($hadir) > 0) {
+                    if ($hadir[$counter] == $mahasiswa->id) {
+                        $status = true;
+                    }
+                }
 
-        $kehadiran = [];
-        $hadir = $request->hadir;
-        $counter = 0;
-        foreach ($listMahasiswa as $mahasiswa) {
-            $status = false;
-            if ($hadir && count($hadir) > 0) {
-                if ($hadir[$counter] == $mahasiswa->id) {
+                $result = DB::table('absensi')
+                    ->where('materi_id', $request->absensi)
+                    ->where('mahasiswa_id', $mahasiswa->id)
+                    ->update([
+                        "absensi_status" => $status
+                    ]);
+
+                if ($status) {
                     unset($hadir[$counter]);
                     $counter++;
-                    $status = true;
                 }
             }
-            array_push($kehadiran, [
-                "materi_id" => $indexMateri->id,
-                "mahasiswa_id" => $mahasiswa->id,
-                "absensi_status" => $status,
+
+            $id = $request->id;
+            return redirect()->route('dosen-kelas-detail', compact("id"))->with("success", "Berhasil mengedit absensi!");
+        } else {
+            //INSERT MATERI
+            $result = DB::table('materi')->insert([
+                "materi_minggu" => $request->minggu,
+                "materi_judul" => $request->materi,
+                "materi_deskripsi" => $request->deskripsi,
+                "kelas_id" => $request->id,
             ]);
+
+            if (!$result) {
+                return back()->withInput()->with('message', "Gagal membuat absensi!");
+            }
+
+            //INSERT ABSENSI
+            $indexMateri = DB::table('materi')->latest('id')->get('id')->first();
+            $listMahasiswa = DB::table('kelas_mahasiswa')->where('kelas_id', $request->id)->get();
+
+            $kehadiran = [];
+            $hadir = $request->hadir;
+            $counter = 0;
+            foreach ($listMahasiswa as $mahasiswa) {
+                $status = false;
+                if ($hadir && count($hadir) > 0) {
+                    if ($hadir[$counter] == $mahasiswa->id) {
+                        unset($hadir[$counter]);
+                        $counter++;
+                        $status = true;
+                    }
+                }
+                array_push($kehadiran, [
+                    "materi_id" => $indexMateri->id,
+                    "mahasiswa_id" => $mahasiswa->id,
+                    "absensi_status" => $status,
+                ]);
+            }
+
+            $result = DB::table('absensi')->insert($kehadiran);
+
+            if (!$result) {
+                return back()->withInput()->with('message', "Gagal membuat absensi!");
+            }
+
+            $id = $request->id;
+            return redirect()->route('dosen-kelas-detail', compact("id"))->with("success", "Berhasil membuat absensi!");
         }
-
-        $result = DB::table('absensi')->insert($kehadiran);
-
-        if (!$result) {
-            return back()->withInput()->with('message', "Gagal membuat absensi!");
-        }
-
-        $id = $request->id;
-        return redirect()->route('dosen-kelas-detail', compact("id"))->with("success", "Berhasil membuat absensi!");
     }
 
     public function pengumuman(Request $request)
