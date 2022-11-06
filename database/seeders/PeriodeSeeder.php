@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Periode;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class PeriodeSeeder extends Seeder
      */
     public function run()
     {
-        $list_periode = [
+        Periode::insert([
             [
                 "periode_tahun" => "2018/2019",
                 "periode_status" => "0",
@@ -36,7 +37,6 @@ class PeriodeSeeder extends Seeder
                 "periode_tahun" => "2022/2023",
                 "periode_status" => "1",
             ],
-        ];
-        DB::table('periode')->insert($list_periode);
+        ]);
     }
 }

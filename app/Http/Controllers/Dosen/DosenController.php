@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dosen;
+use App\Models\Jurusan;
+use App\Models\Mahasiswa;
 use App\Rules\RuleNomorTelepon;
 use App\Rules\RulePassword;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class DosenController extends Controller
@@ -20,7 +22,7 @@ class DosenController extends Controller
     public function viewRegister()
     {
         // Session::flush();
-        $listJurusan = DB::table('jurusan')->get();
+        $listJurusan = Jurusan::all();
         return view('pages.dosen.register', compact("listJurusan"));
     }
 
@@ -35,7 +37,7 @@ class DosenController extends Controller
         $kelulusan = $request->kelulusan;
         $password = $request->password;
 
-        $listTeleponMahasiswa = DB::table('mahasiswa')->get('mahasiswa_telepon');
+        $listTeleponMahasiswa = Mahasiswa::get('mahasiswa_telepon');
         $request->validate(
             [
                 "username" => ["required", "alpha_dash", "min:5", "max:10", "unique:dosen,dosen_username"],
@@ -63,7 +65,7 @@ class DosenController extends Controller
         );
 
         //INSERT DOSEN
-        $result = DB::table('dosen')->insert([
+        $result = Dosen::create([
             "dosen_username" => $username,
             "dosen_nama" => $nama,
             "dosen_email" => $email,

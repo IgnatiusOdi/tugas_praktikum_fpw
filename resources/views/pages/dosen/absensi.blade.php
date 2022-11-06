@@ -65,14 +65,14 @@
                     @foreach ($listMahasiswa as $key => $mahasiswa)
                         <tr>
                             <td>{{ $key + 1 }}</td>
-                            <td>{{ $mahasiswa->mahasiswa_nrp }}</td>
-                            <td>{{ $mahasiswa->mahasiswa_nama }}</td>
+                            <td>{{ $mahasiswa->mahasiswa->mahasiswa_nrp }}</td>
+                            <td>{{ $mahasiswa->mahasiswa->mahasiswa_nama }}</td>
                             <td>
                                 @if (Session::has('editAbsensi'))
-                                    <input type="checkbox" name="hadir[]" value="{{ $mahasiswa->id }}"
-                                        @if ($mahasiswa->absensi_status == 1) checked @endif>
+                                    <input type="checkbox" name="hadir[]" value="{{ $mahasiswa->mahasiswa_id }}"
+                                        @checked($mahasiswa->absensi_status == 1)>
                                 @else
-                                    <input type="checkbox" name="hadir[]" value="{{ $mahasiswa->id }}">
+                                    <input type="checkbox" name="hadir[]" value="{{ $mahasiswa->mahasiswa_id }}">
                                 @endif
                             </td>
                         </tr>

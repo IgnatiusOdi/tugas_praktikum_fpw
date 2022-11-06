@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Pengumuman;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class PengumumanSeeder extends Seeder
      */
     public function run()
     {
-        $list_pengumuman = [
+        Pengumuman::insert([
             [
                 "kelas_id" => "1",
                 "pengumuman_deskripsi" => "Pengumuman Minggu 1",
@@ -41,7 +42,6 @@ class PengumumanSeeder extends Seeder
                 "pengumuman_deskripsi" => "Pengumuman Minggu 5",
                 "pengumuman_link" => "",
             ],
-        ];
-        DB::table('pengumuman')->insert($list_pengumuman);
+        ]);
     }
 }

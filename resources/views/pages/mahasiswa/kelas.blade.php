@@ -36,39 +36,24 @@
                 @php
                     $foundKelas = false;
                 @endphp
-                @foreach (Session::get('listKelas') as $kelas)
-                    @foreach ($kelas['mahasiswa'] as $isiKelas)
-                        @if ($isiKelas == Session::get('mahasiswa')['username'])
-                            @php
-                                $foundKelas = true;
-                            @endphp
-                            <tr>
-                                <th>{{ $kelas['matakuliah'] }}</th>
-                                <td>{{ $kelas['hari'] }}</td>
-                                <td>{{ $kelas['jam'] }}</td>
-                                <td>
-                                    @php
-                                        $p = explode('-', $kelas['periode']);
-                                        $p = $p[0] . '/' . $p[1];
-                                    @endphp
-                                    {{ $p }}
-                                </td>
-                                <td>{{ $kelas['dosen'] }}</td>
-                                <td>
-                                    <form action="{{ route('mahasiswa-kelas-detail', $kelas['id']) }}" method="GET">
-                                        <button name="detail" value="{{ $kelas['id'] }}"
-                                            class="btn btn-info w-2/3">Detail</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endif
-                    @endforeach
-                @endforeach
-                @if (!$foundKelas)
+                @forelse ($listKelas as $kelas)
+                    <tr>
+                        <th>{{ $kelas->kelas->matakuliah->matakuliah_nama }}</th>
+                        <td>{{ $kelas->kelas->hari->hari_nama }}</td>
+                        <td>{{ $kelas->kelas->jam->jam_nama }}</td>
+                        <td>{{ $kelas->kelas->periode->periode_tahun }}</td>
+                        <td>{{ $kelas->kelas->dosen->dosen_nama }}</td>
+                        <td>
+                            <form action="{{ route('mahasiswa-kelas-detail', $kelas->id) }}" method="GET">
+                                <button name="detail" value="{{ $kelas->id }}" class="btn btn-info w-2/3">Detail</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
                     <tr>
                         <td colspan="6" class="text-center font-bold">Tidak ada kelas yang diambil!</td>
                     </tr>
-                @endif
+                @endforelse
             </tbody>
         </table>
     </div>

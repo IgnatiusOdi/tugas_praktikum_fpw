@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\KelasMahasiswa;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class KelasMahasiswaSeeder extends Seeder
      */
     public function run()
     {
-        $kelasMahasiswa = [
+        KelasMahasiswa::insert([
             [
                 "kelas_id" => 1,
                 "mahasiswa_id" => 1,
@@ -41,7 +42,6 @@ class KelasMahasiswaSeeder extends Seeder
                 "mahasiswa_id" => 1,
                 "mahasiswa_status" => 0,
             ]
-        ];
-        DB::table('kelas_mahasiswa')->insert($kelasMahasiswa);
+        ]);
     }
 }

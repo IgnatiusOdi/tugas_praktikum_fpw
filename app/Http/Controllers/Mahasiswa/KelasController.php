@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Absensi;
+use App\Models\Kelas;
+use App\Models\KelasMahasiswa;
+use App\Models\Materi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -10,24 +14,15 @@ class KelasController extends Controller
 {
     public function view(Request $request)
     {
-        $url = $request->segment(3);
-        $periode = "";
-        if (isset($url)) {
-            $listPeriode = explode('-', $url);
-            $periode = $listPeriode[0] . "/" . $listPeriode[1];
-        }
-
-        return view("pages.mahasiswa.kelas", compact("url", "periode"));
+        $listKelas = KelasMahasiswa::where('mahasiswa_id', Session::get('mahasiswa')->id)->where('mahasiswa_status', 1)->get();
+        return view("pages.mahasiswa.kelas", compact("listKelas"));
     }
 
     public function detail(Request $request)
     {
-        foreach (Session::get('listKelas') as $kelas) {
-            if ($kelas['id'] == $request->detail) {
-                $detail = $kelas;
-                return view("pages.mahasiswa.detail", compact("detail"));
-            }
-        }
-        return back()->with("message", "Gagal membuka detail kelas!");
+        $kelas = Kelas::find($request->id);
+        $listAbsensi = $kelas->materi->map(fn ($a) => $a->absensi)->collapse()->where('mahasiswa_id', Session::get('mahasiswa')->id);
+
+        return view("pages.mahasiswa.detail", compact("kelas", "listAbsensi"));
     }
 }

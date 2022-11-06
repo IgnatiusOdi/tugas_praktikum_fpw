@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Materi;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class MateriSeeder extends Seeder
      */
     public function run()
     {
-        $list_materi = [
+        Materi::insert([
             [
                 "materi_minggu" => "1",
                 "materi_judul" => "C++",
@@ -46,7 +47,6 @@ class MateriSeeder extends Seeder
                 "materi_deskripsi" => "-",
                 "kelas_id" => "1",
             ],
-        ];
-        DB::table('materi')->insert($list_materi);
+        ]);
     }
 }

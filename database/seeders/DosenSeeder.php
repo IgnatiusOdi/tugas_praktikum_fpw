@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Dosen;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class DosenSeeder extends Seeder
      */
     public function run()
     {
-        $list_dosen = [
+        Dosen::insert([
             [
                 "dosen_username" => "yosi_k",
                 "dosen_nama" => "Yosi Kristian",
@@ -66,7 +67,6 @@ class DosenSeeder extends Seeder
                 "dosen_kelulusan" => "1985-01-01",
                 "dosen_password" => "pramana",
             ],
-        ];
-        DB::table('dosen')->insert($list_dosen);
+        ]);
     }
 }

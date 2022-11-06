@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Mahasiswa;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class MahasiswaSeeder extends Seeder
      */
     public function run()
     {
-        $list_user = [
+        Mahasiswa::insert([
             [
                 "mahasiswa_nrp" => "220001",
                 "mahasiswa_nama" => "Ignatius Odi",
@@ -66,7 +67,6 @@ class MahasiswaSeeder extends Seeder
                 "mahasiswa_angkatan" => "2020",
                 "mahasiswa_password" => "Wijaya02",
             ],
-        ];
-        DB::table('mahasiswa')->insert($list_user);
+        ]);
     }
 }

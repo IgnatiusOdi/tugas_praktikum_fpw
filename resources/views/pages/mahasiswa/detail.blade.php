@@ -8,11 +8,11 @@
 @section('content')
     <div class="font-bold text-3xl p-8">Detail Kelas</div>
     <div class="ml-6">
-        <div>Mata Kuliah : {{ $detail['matakuliah'] }}</div>
-        <div>Hari : {{ $detail['hari'] }}</div>
-        <div>Jam : {{ $detail['jam'] }}</div>
-        <div>Periode : {{ $detail['periode'] }}</div>
-        <div>Dosen : {{ $detail['dosen'] }}</div>
+        <div>Mata Kuliah : {{ $kelas->matakuliah->matakuliah_nama }}</div>
+        <div>Hari : {{ $kelas->hari->hari_nama }}</div>
+        <div>Jam : {{ $kelas->jam->jam_nama }}</div>
+        <div>Periode : {{ $kelas->periode->periode_tahun }}</div>
+        <div>Dosen : {{ $kelas->dosen->dosen_nama }}</div>
 
     </div>
     <div class="font-bold text-3xl p-8">Absensi</div>
@@ -27,33 +27,37 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($detail['absensi'] as $absen)
-                    @php
-                        $kehadiran = false;
-                    @endphp
+                @forelse ($kelas->materi as $materi)
                     <tr>
-                        <td>{{ $absen['minggu'] }}</td>
-                        <td>{{ $absen['materi'] }}</td>
-                        <td>{{ $absen['deskripsi'] }}</td>
-                        @foreach ($absen['hadir'] as $hadir)
-                            @if ($hadir == Session::get('mahasiswa')['username'])
-                                <td>V</td>
+                        @php
+                            $kehadiran = false;
+                        @endphp
+                        <td>{{ $materi->materi_minggu }}</td>
+                        <td>{{ $materi->materi_judul }}</td>
+                        <td>{{ $materi->materi_deskripsi }}</td>
+                        @foreach ($listAbsensi as $absen)
+                            @if ($absen->materi_id == $materi->id)
+                                @if ($absen->absensi_status == 1)
+                                    <td>V</td>
+                                @else
+                                    <td>X</td>
+                                @endif
                                 @php
                                     $kehadiran = true;
+                                    break;
                                 @endphp
-                            @break
+                            @endif
+                        @endforeach
+                        @if (!$kehadiran)
+                            <td>X</td>
                         @endif
-                    @endforeach
-                    @if (!$kehadiran)
-                        <td>X</td>
-                    @endif
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="4">Belum ada absensi saat ini!</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4">Belum ada absensi saat ini!</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 @endsection

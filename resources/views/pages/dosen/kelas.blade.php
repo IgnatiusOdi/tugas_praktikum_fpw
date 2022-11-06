@@ -34,10 +34,10 @@
             <tbody>
                 @forelse ($listKelas as $kelas)
                     <tr>
-                        <th>{{ $kelas->matakuliah_nama }}</th>
-                        <td>{{ $kelas->hari_nama }}</td>
-                        <td>{{ $kelas->jam_nama }}</td>
-                        <td>{{ $kelas->periode_tahun }}</td>
+                        <th>{{ $kelas->matakuliah->matakuliah_nama }}</th>
+                        <td>{{ $kelas->hari->hari_nama }}</td>
+                        <td>{{ $kelas->jam->jam_nama }}</td>
+                        <td>{{ $kelas->periode->periode_tahun }}</td>
                         <td>
                             <form action="{{ route('dosen-kelas-detail', $kelas->id) }}" method="GET">
                                 <button class="btn btn-info w-2/3">Detail</button>

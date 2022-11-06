@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Jam;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class JamSeeder extends Seeder
      */
     public function run()
     {
-        $list_jam = [
+        Jam::insert([
             [
                 "jam_nama" => "06:00",
             ],
@@ -70,8 +71,6 @@ class JamSeeder extends Seeder
             [
                 "jam_nama" => "23:00",
             ],
-        ];
-
-        DB::table('jam')->insert($list_jam);
+        ]);
     }
 }

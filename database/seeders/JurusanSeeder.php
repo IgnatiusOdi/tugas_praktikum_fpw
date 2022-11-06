@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Jurusan;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class JurusanSeeder extends Seeder
      */
     public function run()
     {
-        $list_jurusan = [
+        Jurusan::insert([
             [
                 "jurusan_kode" => "INF",
                 "jurusan_nama" => "S1-Informatika",
@@ -36,7 +37,6 @@ class JurusanSeeder extends Seeder
                 "jurusan_kode" => "ELE",
                 "jurusan_nama" => "S1-Elektro",
             ],
-        ];
-        DB::table('jurusan')->insert($list_jurusan);
+        ]);
     }
 }

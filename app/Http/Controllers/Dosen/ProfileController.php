@@ -3,23 +3,18 @@
 namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dosen;
+use App\Models\Mahasiswa;
 use App\Rules\RuleNomorTelepon;
 use App\Rules\RulePassword;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class ProfileController extends Controller
 {
     public function view()
     {
-        $dosen = DB::table('dosen')
-            ->join('jurusan', 'jurusan.id', 'dosen.jurusan_id')
-            ->where('dosen.id', Session::get('dosen')->id)
-            ->first([
-                "dosen.id", "dosen_nama", "dosen_username", "dosen_email", "dosen_telepon", "dosen_tanggal_lahir", "jurusan_nama",
-                "dosen_kelulusan", "dosen_password"
-            ]);
+        $dosen = Dosen::where('id', Session::get('dosen')->id)->first();
         return view("pages.dosen.profile", compact('dosen'));
     }
 
@@ -31,7 +26,7 @@ class ProfileController extends Controller
         $telepon = $request->telepon;
         $password = $request->password;
 
-        $listTeleponMahasiswa = DB::table('mahasiswa')->get('mahasiswa_telepon');
+        $listTeleponMahasiswa = Mahasiswa::get('mahasiswa_telepon');
         $request->validate(
             [
                 "username" => "required | alpha_dash | min:5 | max:10",
@@ -43,30 +38,22 @@ class ProfileController extends Controller
         );
 
         // CEK USERNAME EMAIL TELEPON UNIQUE
-        $countUsername = DB::table('dosen')
-            ->where('id', "<>", $id)
-            ->where('dosen_username', $username)
-            ->count();
+        $countUsername = Dosen::where('id', "<>", $id)->where('dosen_username', $username)->count();
+        dd($countUsername);
         if ($countUsername > 0) {
             return back()->withInput()->withErrors(['username' => "Username harus unik!"]);
         }
-        $countEmail = DB::table('dosen')
-            ->where('id', "<>", $id)
-            ->where('dosen_email', $email)
-            ->count();
+        $countEmail = Dosen::where('id', "<>", $id)->where('dosen_email', $email)->count();
         if ($countEmail > 0) {
             return back()->withInput()->withErrors(['email' => "Email harus unik!"]);
         }
-        $countTelepon = DB::table('dosen')
-            ->where('id', "<>", $id)
-            ->where('dosen_telepon', $telepon)
-            ->count();
+        $countTelepon = Dosen::where('id', "<>", $id)->where('dosen_telepon', $telepon)->count();
         if ($countTelepon > 0) {
             return back()->withInput()->withErrors(['telepon' => "Nomor telepon harus unik!"]);
         }
 
         //UPDATE DOSEN
-        $result = DB::table('dosen')->where('id', $id)->update([
+        $result = Dosen::where('id', $id)->update([
             "dosen_username" => $username,
             "dosen_email" => $email,
             "dosen_telepon" => $telepon,
@@ -75,7 +62,7 @@ class ProfileController extends Controller
 
         if ($result) {
             //REPLACE SESSION
-            $dosen = DB::table('dosen')->where('id', $id)->first();
+            $dosen = Dosen::where('id', $id)->first();
             Session::put('dosen', $dosen);
             return back()->with("success", "Berhasil edit profile dosen!");
         } else {

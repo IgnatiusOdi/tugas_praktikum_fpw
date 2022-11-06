@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dosen;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
@@ -35,7 +36,7 @@ class UserController extends Controller
             return redirect()->route("admin");
         }
 
-        $mahasiswa = DB::table('mahasiswa')->where('mahasiswa_nrp', $username)->first();
+        $mahasiswa = Mahasiswa::where('mahasiswa_nrp', $username)->first();
         if ($mahasiswa) {
             // CEK PASSWORD
             if ($password == $mahasiswa->mahasiswa_password) {
@@ -46,7 +47,7 @@ class UserController extends Controller
             }
         }
 
-        $dosen = DB::table('dosen')->where('dosen_username', $username)->first();
+        $dosen = Dosen::where('dosen_username', $username)->first();
         if ($dosen) {
             // CEK PASSWORD
             if ($password == $dosen->dosen_password) {

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Matakuliah;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class MatakuliahSeeder extends Seeder
      */
     public function run()
     {
-        $list_matakuliah = [
+        Matakuliah::insert([
             [
                 "matakuliah_kode" => "INFITP",
                 "matakuliah_nama" => "Intro To Programming",
@@ -50,8 +51,7 @@ class MatakuliahSeeder extends Seeder
                 "jurusan_id" => "2",
                 "matakuliah_semester" => "5",
                 "matakuliah_sks" => "3"
-            ]
-        ];
-        DB::table('matakuliah')->insert($list_matakuliah);
+            ],
+        ]);
     }
 }

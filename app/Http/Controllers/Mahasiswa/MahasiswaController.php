@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dosen;
+use App\Models\Jurusan;
+use App\Models\Mahasiswa;
 use App\Rules\RuleNamaLengkap;
 use App\Rules\RuleNamaLengkapVowel;
 use App\Rules\RuleNomorTelepon;
@@ -21,7 +24,7 @@ class MahasiswaController extends Controller
     public function viewRegister()
     {
         // Session::flush();
-        $listJurusan = DB::table('jurusan')->get();
+        $listJurusan = Jurusan::all();
         return view('pages.mahasiswa.register', compact("listJurusan"));
     }
 
@@ -34,7 +37,7 @@ class MahasiswaController extends Controller
         $jurusan = $request->jurusan;
         $angkatan = $request->angkatan;
 
-        $listTeleponDosen = DB::table('dosen')->get('dosen_telepon');
+        $listTeleponDosen = Dosen::get('dosen_telepon');
         $request->validate(
             [
                 "nama" => ["required", new RuleNamaLengkap(), new RuleNamaLengkapVowel()],
@@ -59,7 +62,7 @@ class MahasiswaController extends Controller
         //NRP
         $splitTahun = str_split($angkatan);
         $nrp = $splitTahun[0] . $splitTahun[2] . $splitTahun[3];
-        $jumlahMahasiswa = DB::table('mahasiswa')->count();
+        $jumlahMahasiswa = Mahasiswa::all()->count();
         $id = $jumlahMahasiswa + 1;
         for ($i = 0; $i < 3 - strlen($id); $i++) {
             $nrp .= "0";
@@ -73,7 +76,7 @@ class MahasiswaController extends Controller
         $password = $words[count($words) - 1] . $year[count($year) - 2] . $year[count($year) - 1];
 
         //INSERT MAHASISWA
-        $result = DB::table('mahasiswa')->insert([
+        $result = Mahasiswa::create([
             "mahasiswa_nrp" => $nrp,
             "mahasiswa_nama" => $nama,
             "mahasiswa_email" => $email,

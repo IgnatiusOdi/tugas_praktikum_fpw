@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Absensi;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class AbsensiSeeder extends Seeder
      */
     public function run()
     {
-        $list_absensi = [
+        Absensi::insert([
             [
                 "materi_id" => 1,
                 "mahasiswa_id" => 1,
@@ -56,7 +57,6 @@ class AbsensiSeeder extends Seeder
                 "mahasiswa_id" => 4,
                 "absensi_status" => false,
             ],
-        ];
-        DB::table('absensi')->insert($list_absensi);
+        ]);
     }
 }

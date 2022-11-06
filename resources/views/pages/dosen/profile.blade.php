@@ -49,7 +49,7 @@
                     <p>Tanggal Lahir : {{ date('d F Y', strtotime($dosen->dosen_tanggal_lahir)) }}</p>
 
                     {{-- Jurusan --}}
-                    <p>Jurusan Lulusan : {{ $dosen->jurusan_nama }}</p>
+                    <p>Jurusan Lulusan : {{ $dosen->jurusan->jurusan_nama }}</p>
 
                     {{-- Tahun Kelulusan --}}
                     <p>Tahun Kelulusan : {{ $dosen->dosen_kelulusan }}</p>

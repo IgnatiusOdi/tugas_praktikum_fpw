@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Hari;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class HariSeeder extends Seeder
      */
     public function run()
     {
-        $list_hari = [
+        Hari::insert([
             [
                 "hari_nama" => "Senin",
             ],
@@ -31,8 +32,6 @@ class HariSeeder extends Seeder
             [
                 "hari_nama" => "Jumat",
             ],
-        ];
-
-        DB::table('hari')->insert($list_hari);
+        ]);
     }
 }
