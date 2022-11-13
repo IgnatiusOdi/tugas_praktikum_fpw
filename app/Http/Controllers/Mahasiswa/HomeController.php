@@ -14,14 +14,10 @@ class HomeController extends Controller
 {
     public function view()
     {
-        if (Session::has('mahasiswa')) {
-            $mahasiswa = Session::get('mahasiswa');
-            $listKelas = Kelas::all();
-            $listTergabung = KelasMahasiswa::where('mahasiswa_id', $mahasiswa->id)->where('mahasiswa_status', 1)->get();
-            return view("pages.mahasiswa.home", compact('mahasiswa', 'listKelas', 'listTergabung'));
-        } else {
-            return redirect()->intended('login')->with("message", "Mahasiswa belum login!");
-        }
+        $mahasiswa = auth()->user();
+        $listKelas = Kelas::all();
+        $listTergabung = KelasMahasiswa::where('mahasiswa_id', $mahasiswa->id)->where('mahasiswa_status', 1)->get();
+        return view("pages.mahasiswa.home", compact('mahasiswa', 'listKelas', 'listTergabung'));
     }
 
     public function viewModule(Request $request)
@@ -44,7 +40,7 @@ class HomeController extends Controller
         //CEK SUDAH DEADLINE
         if ($module->module_status == 1 && now() < $module->module_deadline) {
             //CEK SUDAH PERNAH KUMPUL / BELUM
-            $exist = MahasiswaModule::where('module_id', $id)->where('mahasiswa_id', Session::get('mahasiswa')->id)->first();
+            $exist = MahasiswaModule::where('module_id', $id)->where('mahasiswa_id', auth("guard_mahasiswa")->user()->id)->first();
 
             if ($exist) {
                 //UPDATE
@@ -55,7 +51,7 @@ class HomeController extends Controller
                 //INSERT
                 $result = MahasiswaModule::create([
                     "module_id" => $id,
-                    "mahasiswa_id" => Session::get('mahasiswa')->id,
+                    "mahasiswa_id" => auth("guard_mahasiswa")->user()->id,
                     "module_jawaban" => $jawaban,
                 ]);
             }

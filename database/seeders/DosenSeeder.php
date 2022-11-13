@@ -6,6 +6,7 @@ use App\Models\Dosen;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DosenSeeder extends Seeder
 {
@@ -25,7 +26,7 @@ class DosenSeeder extends Seeder
                 "dosen_tanggal_lahir" => "1975-01-01",
                 "jurusan_id" => "1",
                 "dosen_kelulusan" => "1995-01-01",
-                "dosen_password" => "kristian",
+                "dosen_password" => Hash::make("kristian"),
             ],
             [
                 "dosen_username" => "ben_l",
@@ -35,7 +36,7 @@ class DosenSeeder extends Seeder
                 "dosen_tanggal_lahir" => "1985-01-01",
                 "jurusan_id" => "2",
                 "dosen_kelulusan" => "2005-01-01",
-                "dosen_password" => "limanto",
+                "dosen_password" => Hash::make("limanto"),
             ],
             [
                 "dosen_username" => "evan_k",
@@ -45,7 +46,7 @@ class DosenSeeder extends Seeder
                 "dosen_tanggal_lahir" => "1995-01-01",
                 "jurusan_id" => "1",
                 "dosen_kelulusan" => "2015-01-01",
-                "dosen_password" => "kusuma",
+                "dosen_password" => Hash::make("kusuma"),
             ],
             [
                 "dosen_username" => "mikhael_s",
@@ -55,7 +56,7 @@ class DosenSeeder extends Seeder
                 "dosen_tanggal_lahir" => "1995-01-01",
                 "jurusan_id" => "1",
                 "dosen_kelulusan" => "2015-01-01",
-                "dosen_password" => "setiawan",
+                "dosen_password" => Hash::make("setiawan"),
             ],
             [
                 "dosen_username" => "edwin_p",
@@ -65,7 +66,7 @@ class DosenSeeder extends Seeder
                 "dosen_tanggal_lahir" => "1965-01-01",
                 "jurusan_id" => "1",
                 "dosen_kelulusan" => "1985-01-01",
-                "dosen_password" => "pramana",
+                "dosen_password" => Hash::make("pramana"),
             ],
         ]);
     }

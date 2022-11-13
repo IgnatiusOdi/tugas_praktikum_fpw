@@ -7,73 +7,66 @@
         <div class="font-bold text-5xl p-10">Welcome, Admin!</div>
         <div class="font-bold text-3xl p-10">Progress saat ini :</div>
         <div class="radial-progress text-primary border-4 border-primary mx-10"
-            style="--value:71.42; --size:14rem; --thickness: 1rem;">71.42%</div>
-        {{-- <div class="font-bold text-2xl p-10 bg-primary-focus text-secondary">List Mata Kuliah</div>
-        <div class="text-xl p-4">Total mata kuliah yang ada: {{ count(Session::get('listMataKuliah')) }} mata kuliah</div>
-        <div class="grid grid-cols-4 gap-4 p-4">
-            @forelse (Session::get('listMataKuliah') as $matkul)
-                <div class="card w-full glass">
-                    <figure><img src="https://placeimg.com/400/225/arch" alt="Foto Pelajaran" /></figure>
-                    <div class="card-body">
-                        <h2 class="card-title">{{ $matkul }}</h2>
-                    </div>
-                </div>
-            @empty
-                <div>Tidak ada mata kuliah saat ini!</div>
-            @endforelse
-        </div>
-        <div class="font-bold text-2xl p-10 bg-primary-focus text-secondary">List Dosen</div>
-        <div class="text-xl p-4">Total dosen yang ada: {{ count(Session::get('listDosen')) }} dosen</div>
-        <div class="carousel mx-auto w-1/2">
-            @forelse (Session::get('listDosen') as $key => $dosen)
-                <div id="slide{{ $key }}" class="carousel-item relative w-full">
-                    <div class="card w-full bg-primary-content mb-4">
-                        <figure><img src="https://placeimg.com/400/225/arch" alt="Foto Dosen" class="mt-4 rounded" />
-                        </figure>
-                        <div class="card-body px-32">
-                            <h2 class="card-title">{{ $dosen['nama'] }}</h2>
-                            <p>{{ $dosen['jurusan'] }}</p>
-                            <div class="card-actions justify-end">
-                                <div class="badge badge-outline">{{ $dosen['nomor'] }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/3">
-                        <a href="@if ($key > 0) #slide{{ $key - 1 }} @else #slide{{ count(Session::get('listDosen')) - 1 }} @endif"
-                            class="btn btn-circle">❮</a>
-                        <a href="@if ($key < count(Session::get('listDosen')) - 1) #slide{{ $key + 1 }} @else #slide0 @endif"
-                            class="btn btn-circle">❯</a>
-                    </div>
-                </div>
-            @empty
-                <div>Tidak ada doesn saat ini!</div>
-            @endforelse
-        </div>
-        <div class="font-bold text-2xl p-10 bg-primary-focus text-secondary">List Mahasiswa</div>
-        <div class="text-xl p-4">Total mahasiswa yang ada: {{ count(Session::get('listMahasiswa')) }} mahasiswa</div>
-        <div class="overflow-x-auto px-8 py-4">
+            style="--value:99.99; --size:14rem; --thickness: 1rem;">99.99%</div>
+
+        {{-- LIST DOSEN --}}
+        <div class="overflow-x-auto">
             <table class="table table-compact table-zebra w-full text-center">
                 <thead>
                     <tr>
-                        <th>NRP</th>
-                        <th>Nama Lengkap</th>
-                        <th>Password</th>
+                        <th>Nama Dosen</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse (Session::get('listMahasiswa') as $mahasiswa)
+                    @foreach ($listDosen as $dosen)
                         <tr>
-                            <th>{{ $mahasiswa['nrp'] }}</th>
-                            <td>{{ $mahasiswa['nama'] }}</td>
-                            <td>{{ $mahasiswa['password'] }}</td>
+                            <td>{{ $dosen->dosen_nama }}</td>
+                            <form action="{{ route('admin-ban-dosen', $dosen->id) }}" method="post">
+                                @csrf
+                                @if ($dosen->deleted_at == null)
+                                    <td>Aktif</td>
+                                    <td><button class="btn btn-error">BAN</button></td>
+                                @else
+                                    <td>Banned</td>
+                                    <td><button class="btn btn-success">UNBAN</button></td>
+                                @endif
+                            </form>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3">Tidak ada mahasiswa saat ini!</td>
-                        </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
-        </div> --}}
+        </div>
+
+        {{-- LIST MAHASISWA --}}
+        <div class="overflow-x-auto">
+            <table class="table table-compact table-zebra w-full text-center">
+                <thead>
+                    <tr>
+                        <th>Nama Mahasiswa</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($listMahasiswa as $mahasiswa)
+                        <tr>
+                            <td>{{ $mahasiswa->mahasiswa_nama }}</td>
+                            <form action="{{ route('admin-ban-mahasiswa', $mahasiswa->id) }}" method="post">
+                                @csrf
+                                @if ($mahasiswa->deleted_at == null)
+                                    <td>Aktif</td>
+                                    <td><button class="btn btn-error">BAN</button></td>
+                                @else
+                                    <td>Banned</td>
+                                    <td><button class="btn btn-success">UNBAN</button></td>
+                                @endif
+                            </form>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection

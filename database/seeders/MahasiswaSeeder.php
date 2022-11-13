@@ -6,6 +6,7 @@ use App\Models\Mahasiswa;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class MahasiswaSeeder extends Seeder
 {
@@ -25,7 +26,7 @@ class MahasiswaSeeder extends Seeder
                 "mahasiswa_tanggal_lahir" => "2002-05-21",
                 "jurusan_id" => "1",
                 "mahasiswa_angkatan" => "2020",
-                "mahasiswa_password" => "Odi02",
+                "mahasiswa_password" => Hash::make("Odi02"),
             ],
             [
                 "mahasiswa_nrp" => "220002",
@@ -35,7 +36,7 @@ class MahasiswaSeeder extends Seeder
                 "mahasiswa_tanggal_lahir" => "2002-01-01",
                 "jurusan_id" => "1",
                 "mahasiswa_angkatan" => "2020",
-                "mahasiswa_password" => "Satria02",
+                "mahasiswa_password" => Hash::make("Satria02"),
             ],
             [
                 "mahasiswa_nrp" => "220003",
@@ -45,7 +46,7 @@ class MahasiswaSeeder extends Seeder
                 "mahasiswa_tanggal_lahir" => "2002-10-09",
                 "jurusan_id" => "1",
                 "mahasiswa_angkatan" => "2020",
-                "mahasiswa_password" => "Chris02",
+                "mahasiswa_password" => Hash::make("Chris02"),
             ],
             [
                 "mahasiswa_nrp" => "220004",
@@ -55,7 +56,7 @@ class MahasiswaSeeder extends Seeder
                 "mahasiswa_tanggal_lahir" => "2002-07-01",
                 "jurusan_id" => "1",
                 "mahasiswa_angkatan" => "2020",
-                "mahasiswa_password" => "Jagoan02",
+                "mahasiswa_password" => Hash::make("Jagoan02"),
             ],
             [
                 "mahasiswa_nrp" => "220005",
@@ -65,7 +66,7 @@ class MahasiswaSeeder extends Seeder
                 "mahasiswa_tanggal_lahir" => "2002-12-25",
                 "jurusan_id" => "1",
                 "mahasiswa_angkatan" => "2020",
-                "mahasiswa_password" => "Wijaya02",
+                "mahasiswa_password" => Hash::make("Wijaya02"),
             ],
         ]);
     }

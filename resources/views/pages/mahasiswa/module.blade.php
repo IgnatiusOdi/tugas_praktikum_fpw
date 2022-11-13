@@ -34,7 +34,7 @@
 
         @php
             $statusPengumpulan = App\Models\MahasiswaModule::where('module_id', $module->id)
-                ->where('mahasiswa_id', Session::get('mahasiswa')->id)
+                ->where('mahasiswa_id', auth("guard_mahasiswa")->user()->id)
                 ->first();
         @endphp
         @if ($statusPengumpulan)

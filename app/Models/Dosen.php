@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Dosen extends Model
+class Dosen extends Authenticatable
 {
     use HasFactory;
     use SoftDeletes;
@@ -35,5 +36,10 @@ class Dosen extends Model
     public function jurusan()
     {
         return $this->belongsTo(Jurusan::class);
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->dosen_password;
     }
 }

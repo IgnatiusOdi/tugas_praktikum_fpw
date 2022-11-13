@@ -15,8 +15,8 @@ class DosenController extends Controller
 {
     public function logout()
     {
-        Session::forget('dosen');
-        return redirect()->intended("login")->with("success", "Berhasil logout!");
+        auth("guard_dosen")->logout();
+        return redirect('/')->with("success", "Berhasil logout!");
     }
 
     public function viewRegister()
@@ -81,6 +81,5 @@ class DosenController extends Controller
         } else {
             return back()->withInput()->with("message", "Gagal register dosen!");
         }
-
     }
 }

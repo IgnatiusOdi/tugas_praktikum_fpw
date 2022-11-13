@@ -8,6 +8,16 @@
 @section('content')
     <div class="font-bold text-5xl p-10">Welcome, {{ $mahasiswa->mahasiswa_nama }}!</div>
 
+    {{-- SEARCH --}}
+    <form action="{{ route('mahasiswa-find') }}" method="get">
+        <select name="role">
+            <option value="dosen">Dosen</option>
+            <option value="mahasiswa">Mahasiswa</option>
+        </select>
+        <input type="text" name="nama" value="{{ old('nama') }}" placeholder="nama">
+        <button class="btn btn-info">Search</button>
+    </form>
+
     {{-- MODULE AKTIF --}}
     <div class="font-bold text-3xl text-center mb-4">Module Aktif</div>
     <div class="overflow-x-auto px-8">
@@ -35,8 +45,7 @@
                             <td>{{ $module->module_jenis }}</td>
                             <td>{{ $module->module_deadline }}</td>
                             <td>
-                                <form action="{{ route('mahasiswa-view-module', $module->id) }}" method="POST">
-                                    @csrf
+                                <form action="{{ route('mahasiswa-view-module', $module->id) }}" method="GET">
                                     <button class="btn btn-info w-2/3">Detail</button>
                                 </form>
                             </td>

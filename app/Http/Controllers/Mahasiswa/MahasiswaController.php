@@ -10,15 +10,13 @@ use App\Rules\RuleNamaLengkap;
 use App\Rules\RuleNamaLengkapVowel;
 use App\Rules\RuleNomorTelepon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
 class MahasiswaController extends Controller
 {
     public function logout()
     {
-        Session::forget('mahasiswa');
-        return redirect()->intended("login")->with("success", "Berhasil logout!");
+        auth("guard_mahasiswa")->logout();
+        return redirect('/')->with("success", "Berhasil logout!");
     }
 
     public function viewRegister()

@@ -19,6 +19,7 @@ use App\Http\Controllers\Mahasiswa\MahasiswaController;
 use App\Http\Controllers\Mahasiswa\HomeController as MahasiswaHomeController;
 use App\Http\Controllers\Mahasiswa\KelasController as MahasiswaKelasController;
 use App\Http\Controllers\Mahasiswa\ProfileController as MahasiswaProfileController;
+use App\Http\Controllers\Mahasiswa\FindController as MahasiswaFindController;
 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -51,6 +52,13 @@ Route::prefix('admin')->group(function () {
     //DASHBOARD
     Route::get('/', [AdminController::class, 'view'])->name('admin');
     Route::post('/', [AdminController::class, 'logout'])->name('admin-logout');
+    //BAN
+    Route::prefix('ban')->group(function () {
+        //DOSEN
+        Route::post('dosen/{id}', [AdminController::class, 'banDosen'])->name('admin-ban-dosen');
+        //MAHASISWA
+        Route::post('mahasiswa/{id}', [AdminController::class, 'banMahasiswa'])->name('admin-ban-mahasiswa');
+    });
     //MATA KULIAH
     Route::prefix('matakuliah')->group(function () {
         Route::get('/', [MataKuliahController::class, 'view'])->name('admin-matakuliah');
@@ -74,55 +82,57 @@ Route::prefix('admin')->group(function () {
 });
 
 //DOSEN
-Route::prefix('dosen')->group(function () {
+Route::prefix('dosen')->middleware(['CekRole:dosen'])->group(function () {
     //HOME
-    Route::get('/', [DosenHomeController::class, "view"])->name("dosen");
-    Route::post('/', [DosenController::class, "logout"])->name("dosen-logout");
+    Route::get('/', [DosenHomeController::class, "view"])->name("dosen")->middleware('Logging:Akses Home');
+    Route::post('/', [DosenController::class, "logout"])->name("dosen-logout")->middleware("Logging:Logout");
     //KELAS
     Route::prefix('kelas')->group(function () {
         // Route::get('kelas/{kode_periode?}', [DosenKelasController::class, 'view'])->name("dosen-kelas-periode");
-        Route::get('/', [DosenKelasController::class, 'view'])->name("dosen-kelas");
-        Route::get('{id}', [DosenKelasController::class, 'detail'])->name('dosen-kelas-detail');
+        Route::get('/', [DosenKelasController::class, 'view'])->name("dosen-kelas")->middleware('Logging:Akses Kelas');
+        Route::get('{id}', [DosenKelasController::class, 'detail'])->name('dosen-kelas-detail')->middleware('Logging:Akses Detail Kelas');
         //ABSENSI
-        Route::post('{id}', [DosenKelasController::class, 'actionAbsensi'])->name('dosen-kelas-action-absensi');
-        Route::get('{id}/absensi/{absensi?}', [DosenKelasController::class, 'absensi'])->name('dosen-kelas-absensi');
-        Route::post('{id}/absensi/{absensi?}', [DosenKelasController::class, 'createAbsensi'])->name('dosen-kelas-create-absensi');
+        Route::post('{id}', [DosenKelasController::class, 'actionAbsensi'])->name('dosen-kelas-action-absensi')->middleware('Logging:Action Absensi');
+        Route::get('{id}/absensi/{absensi?}', [DosenKelasController::class, 'absensi'])->name('dosen-kelas-absensi')->middleware('Logging:Akses Absensi');
+        Route::post('{id}/absensi/{absensi?}', [DosenKelasController::class, 'createAbsensi'])->name('dosen-kelas-create-absensi')->middleware('Logging:Create Absensi');
         //PENGUMUMAN
-        Route::get('{id}/pengumuman', [DosenKelasController::class, 'pengumuman'])->name('dosen-kelas-pengumuman');
-        Route::post('id}/pengumuman', [DosenKelasController::class, 'createPengumuman'])->name('dosen-kelas-create-pengumuman');
+        Route::get('{id}/pengumuman', [DosenKelasController::class, 'pengumuman'])->name('dosen-kelas-pengumuman')->middleware('Logging:Akses Pengumuman');
+        Route::post('id}/pengumuman', [DosenKelasController::class, 'createPengumuman'])->name('dosen-kelas-create-pengumuman')->middleware('Logging:Create Pengumuman');
         //MODULE
-        Route::get('{id}/module', [DosenKelasController::class, 'module'])->name('dosen-kelas-module');
-        Route::post('{id}/module', [DosenKelasController::class, 'createModule'])->name('dosen-kelas-create-module');
-        Route::get('{id}/module/{module}', [DosenKelasController::class, 'detailModule'])->name('dosen-kelas-detail-module');
-        Route::post('{id}/module/{module}', [DosenKelasController::class, 'actionModule'])->name('dosen-kelas-action-module');
+        Route::get('{id}/module', [DosenKelasController::class, 'module'])->name('dosen-kelas-module')->middleware('Logging:Akses Module');
+        Route::post('{id}/module', [DosenKelasController::class, 'createModule'])->name('dosen-kelas-create-module')->middleware('Logging:Create Module');
+        Route::get('{id}/module/{module}', [DosenKelasController::class, 'detailModule'])->name('dosen-kelas-detail-module')->middleware('Logging:Detail Module');
+        Route::post('{id}/module/{module}', [DosenKelasController::class, 'actionModule'])->name('dosen-kelas-action-module')->middleware('Logging:Action Module');
     });
     //PROFILE
     Route::prefix('profile')->group(function () {
-        Route::get('/', [DosenProfileController::class, "view"])->name("dosen-profile");
-        Route::post('/', [DosenProfileController::class, "edit"])->name("dosen-edit-profile");
+        Route::get('/', [DosenProfileController::class, "view"])->name("dosen-profile")->middleware('Logging:Akses Profile');
+        Route::post('/', [DosenProfileController::class, "edit"])->name("dosen-edit-profile")->middleware('Logging:Edit Profile');
     });
 });
 
 //MAHASISWA
-Route::prefix('mahasiswa')->group(function () {
+Route::prefix('mahasiswa')->middleware(['CekRole:mahasiswa'])->group(function () {
     //HOME
-    Route::get('/', [MahasiswaHomeController::class, "view"])->name("mahasiswa");
-    Route::post('/', [MahasiswaController::class, "logout"])->name("mahasiswa-logout");
+    Route::get('/', [MahasiswaHomeController::class, "view"])->name("mahasiswa")->middleware('Logging:Akses Home');
+    Route::post('/', [MahasiswaController::class, "logout"])->name("mahasiswa-logout")->middleware('Logging:Logout');
     //MODULE
     Route::prefix('module')->group(function () {
-        Route::get('{id}', [MahasiswaHomeController::class, "viewModule"])->name("mahasiswa-view-module");
-        Route::post('{id}', [MahasiswaHomeController::class, "submit"])->name("mahasiswa-submit-module");
+        Route::get('{id}', [MahasiswaHomeController::class, "viewModule"])->name("mahasiswa-view-module")->middleware('Logging:Lihat Module');
+        Route::post('{id}', [MahasiswaHomeController::class, "submit"])->name("mahasiswa-submit-module")->middleware('Logging:Submit Module');
     });
     //KELAS
-    Route::post('join', [MahasiswaHomeController::class, 'join'])->name("mahasiswa-join-kelas");
+    Route::post('join', [MahasiswaHomeController::class, 'join'])->name("mahasiswa-join-kelas")->middleware('Logging:Join Kelas');
     Route::prefix('kelas')->group(function () {
         // Route::get('kelas/{kode_periode?}', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas-periode");
-        Route::get('/', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas");
-        Route::get('{id}', [MahasiswaKelasController::class, "detail"])->name('mahasiswa-kelas-detail');
+        Route::get('/', [MahasiswaKelasController::class, 'view'])->name("mahasiswa-kelas")->middleware('Logging:Akses Kelas');
+        Route::get('{id}', [MahasiswaKelasController::class, "detail"])->name('mahasiswa-kelas-detail')->middleware('Logging:Akses Detail Kelas');
     });
     //PROFILE
     Route::prefix('profile')->group(function () {
-        Route::get('/', [MahasiswaProfileController::class, "view"])->name("mahasiswa-profile");
-        Route::post('/', [MahasiswaProfileController::class, "edit"])->name("mahasiswa-edit-profile");
+        Route::get('/', [MahasiswaProfileController::class, "view"])->name("mahasiswa-profile")->middleware('Logging:Akses Profile');
+        Route::post('/', [MahasiswaProfileController::class, "edit"])->name("mahasiswa-edit-profile")->middleware('Logging:Edit Profile');
     });
+    //CARI PROFILE
+    Route::get('find/{id?}', [MahasiswaFindController::class, "view"])->name('mahasiswa-find')->middleware("Logging:Cari Profile");
 });

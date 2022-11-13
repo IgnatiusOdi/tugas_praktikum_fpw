@@ -30,35 +30,30 @@ class UserController extends Controller
             ]
         );
 
+        $credentials = [
+            "mahasiswa_nrp" => $username,
+            "password" => $password,
+        ];
+
         //ADMIN LOGIN
         if ($username == "admin" && $password == "admin") {
             Session::put('admin', true);
             return redirect()->route("admin");
         }
 
-        $mahasiswa = Mahasiswa::where('mahasiswa_nrp', $username)->first();
-        if ($mahasiswa) {
-            // CEK PASSWORD
-            if ($password == $mahasiswa->mahasiswa_password) {
-                Session::put('mahasiswa', $mahasiswa);
-                return redirect()->route('mahasiswa');
-            } else {
-                return back()->withInput()->withErrors(["password" => "Password salah!"]);
-            }
-        }
-
-        $dosen = Dosen::where('dosen_username', $username)->first();
-        if ($dosen) {
-            // CEK PASSWORD
-            if ($password == $dosen->dosen_password) {
-                Session::put('dosen', $dosen);
+        //MAHASISWA
+        if (auth('guard_mahasiswa')->attempt($credentials)) {
+            return redirect()->route('mahasiswa');
+        } else {
+            //DOSEN
+            $credentials = [
+                "dosen_username" => $username,
+                "password" => $password,
+            ];
+            if (auth('guard_dosen')->attempt($credentials)) {
                 return redirect()->route('dosen');
-            } else {
-                return back()->withInput()->withErrors(["password" => "Password salah!"]);
             }
         }
-
-        // JIKA TIDAK ADA, BERARTI TIDAK TERDAFTAR
-        return back()->withInput()->withErrors(["username" => "User tidak terdaftar!"]);
+        return back()->withInput()->with("message", "Gagal login!");
     }
 }
