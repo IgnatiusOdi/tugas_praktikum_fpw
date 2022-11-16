@@ -134,5 +134,9 @@ Route::prefix('mahasiswa')->middleware(['CekRole:mahasiswa'])->group(function ()
         Route::post('/', [MahasiswaProfileController::class, "edit"])->name("mahasiswa-edit-profile")->middleware('Logging:Edit Profile');
     });
     //CARI PROFILE
-    Route::get('find/{id?}', [MahasiswaFindController::class, "view"])->name('mahasiswa-find')->middleware("Logging:Cari Profile");
+    Route::prefix('find')->group(function () {
+        Route::get('/', [MahasiswaFindController::class, "view"])->name('mahasiswa-find')->middleware("Logging:Cari Profile");
+        Route::get('dosen/{id?}', [MahasiswaFindController::class, "viewDosen"])->name('mahasiswa-find-dosen')->middleware("Logging: Cari Dosen");
+        Route::get('mahasiswa/{id?}', [MahasiswaFindController::class, "viewMahasiswa"])->name('mahasiswa-find-teman')->middleware("Logging: Cari Teman");
+    });
 });

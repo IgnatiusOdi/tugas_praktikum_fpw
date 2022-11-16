@@ -13,5 +13,8 @@ class Log extends Model
         "user_id",
         "role",
         "keterangan",
+        "route_path",
+        "ip_address",
+        "status_code",
     ];
 }

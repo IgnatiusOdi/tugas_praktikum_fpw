@@ -42,18 +42,24 @@ class UserController extends Controller
         }
 
         //MAHASISWA
-        if (auth('guard_mahasiswa')->attempt($credentials)) {
-            return redirect()->route('mahasiswa');
+        $mahasiswa = Mahasiswa::withTrashed()->where('mahasiswa_nrp', $username)->first();
+        $dosen = Dosen::withTrashed()->where('dosen_username', $username)->first();
+        if (($mahasiswa && $mahasiswa->deleted_at != null) || ($dosen && $dosen->deleted_at != null)) {
+            return back()->withInput()->with("message", "Banned!");
         } else {
-            //DOSEN
-            $credentials = [
-                "dosen_username" => $username,
-                "password" => $password,
-            ];
-            if (auth('guard_dosen')->attempt($credentials)) {
-                return redirect()->route('dosen');
+            if (auth('guard_mahasiswa')->attempt($credentials)) {
+                return redirect()->route('mahasiswa');
+            } else {
+                //DOSEN
+                $credentials = [
+                    "dosen_username" => $username,
+                    "password" => $password,
+                ];
+                if (auth('guard_dosen')->attempt($credentials)) {
+                    return redirect()->route('dosen');
+                }
             }
+            return back()->withInput()->with("message", "Gagal login!");
         }
-        return back()->withInput()->with("message", "Gagal login!");
     }
 }

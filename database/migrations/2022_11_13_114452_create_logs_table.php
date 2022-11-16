@@ -18,6 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('role');
             $table->string('keterangan');
+            $table->string('route_path');
+            $table->string('ip_address');
+            $table->string('status_code');
             $table->timestamps();
         });
     }

@@ -24,12 +24,18 @@ class Logging
                 "user_id" => auth("guard_mahasiswa")->user()->id,
                 "role" => "mahasiswa",
                 "keterangan" => $keterangan,
+                "route_path" => $request->fullUrl(),
+                "ip_address" => $request->ip(),
+                "status_code" => $response->status(),
             ]);
         } else if (auth("guard_dosen")->check()) {
             Log::create([
                 "user_id" => auth("guard_dosen")->user()->id,
                 "role" => "dosen",
                 "keterangan" => $keterangan,
+                "route_path" => $request->fullUrl(),
+                "ip_address" => $request->ip(),
+                "status_code" => $request->status(),
             ]);
         }
 

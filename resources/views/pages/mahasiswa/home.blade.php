@@ -9,12 +9,9 @@
     <div class="font-bold text-5xl p-10">Welcome, {{ $mahasiswa->mahasiswa_nama }}!</div>
 
     {{-- SEARCH --}}
+    <div class="font-bold text-3xl text-center mb-4">Search</div>
     <form action="{{ route('mahasiswa-find') }}" method="get">
-        <select name="role">
-            <option value="dosen">Dosen</option>
-            <option value="mahasiswa">Mahasiswa</option>
-        </select>
-        <input type="text" name="nama" value="{{ old('nama') }}" placeholder="nama">
+        <input type="text" name="nama" value="{{ old('nama') }}" placeholder="Nama">
         <button class="btn btn-info">Search</button>
     </form>
 

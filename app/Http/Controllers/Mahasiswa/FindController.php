@@ -12,29 +12,29 @@ class FindController extends Controller
 {
     public function view(Request $request)
     {
-        $role = $request->role;
         $nama = $request->nama;
-        if ($role == "dosen") {
-            $result = Dosen::where('dosen_nama', 'LIKE', '%' . $nama . '%')->first();
-        } else {
-            $result = Mahasiswa::where('mahasiswa_nama', 'LIKE', '%' . $nama . '%')->first();
-        }
+        $listDosen = Dosen::withTrashed()->where('dosen_nama', 'LIKE', '%' . $nama . '%')->get();
+        $listMahasiswa = Mahasiswa::withTrashed()->where('mahasiswa_nama', 'LIKE', '%' . $nama . '%')->get();
 
-        if ($result) {
-            if ($role == "dosen") {
-                return view('pages.mahasiswa.find', compact("result"));
-            } else {
-                $listKelas = KelasMahasiswa::where('mahasiswa_id', auth('guard_mahasiswa')->user()->id)->get();
-                foreach ($listKelas as $key => $kelas) {
-                    $cariMahasiswa = KelasMahasiswa::where('kelas_id', $kelas->kelas_id)->whereIn("mahasiswa_id", [$result->id, auth("guard_mahasiswa")->user()->id])->count();
-                    if ($cariMahasiswa > 1) {
-                        return view('pages.mahasiswa.find', compact("result"));
-                    }
-                }
-                return back()->with("message", "Mahasiswa tidak pernah 1 kelas");
+        return view('pages.mahasiswa.find', compact("listDosen", "listMahasiswa"));
+    }
+
+    public function viewDosen(Request $request)
+    {
+        $result = Dosen::withTrashed()->find($request->id);
+        return view('pages.mahasiswa.detailfind', compact("result"));
+    }
+
+    public function viewMahasiswa(Request $request)
+    {
+        $result = Mahasiswa::withTrashed()->find($request->id);
+        $listKelas = KelasMahasiswa::where('mahasiswa_id', auth('guard_mahasiswa')->user()->id)->get();
+        foreach ($listKelas as $key => $kelas) {
+            $cariMahasiswa = KelasMahasiswa::where('kelas_id', $kelas->kelas_id)->whereIn("mahasiswa_id", [$result->id, auth("guard_mahasiswa")->user()->id])->count();
+            if ($cariMahasiswa > 1) {
+                return view('pages.mahasiswa.detailfind', compact("result"));
             }
-        } else {
-            return back()->with("message", "Gagal melakukan pencarian!");
         }
+        return back()->with("message", "Mahasiswa tidak pernah 1 kelas");
     }
 }
